@@ -10,18 +10,18 @@ jobs:
       - name: Set up Git Repository
         uses: actions/checkout@v4
 
-      # Устанавливаем легкий набор TeX Live и сам компилятор Asymptote напрямую в систему
+      # Добавили пакет cm-super для поддержки русского языка в pdflatex
       - name: Install LaTeX and Asymptote
         run: |
           sudo apt-get update
-          sudo apt-get install -y texlive-latex-base texlive-latex-extra texlive-science asymptote
+          sudo apt-get install -y texlive-latex-base texlive-latex-extra texlive-science texlive-lang-cyrillic cm-super asymptote
 
       - name: Compile Document
         run: |
           # 1. Сборка для генерации временных .asy файлов
           pdflatex -interaction=nonstopmode main.tex || true
           
-          # 2. Компиляция графики Asymptote (теперь команда точно найдется)
+          # 2. Компиляция графики Asymptote
           asy *.asy
           
           # 3. Финальная сборка со вшитой графикой
