@@ -1,0 +1,91 @@
+\documentclass[12pt]{standalone}
+\usepackage[inline]{asymptote}
+\usepackage[utf8]{inputenc}
+\usepackage[T1,T2A]{fontenc}
+\usepackage[]{graphicx}
+\usepackage[russian]{babel}
+
+\begin{document}
+    \centering
+\begin{asy}
+//[width=.7\linewidth]
+import graph;
+size(7.5cm,0);
+
+
+real c=2;
+real b=8;
+
+
+path curv=(-b,c)--(b,c)--(b,-c)--(-b,-c)--cycle;
+fill(curv, yellow+opacity(.2));
+
+
+path curv=(-b,c)--(b,c);
+draw(curv,gray);
+
+
+path curv=(-b,-c)--(b,-c);
+draw(curv,gray);
+
+
+//
+
+
+// --- СЕКРЕТНАЯ ФОРМУЛА ПЕРЕСЧЕТА ---
+// Находим, сколько единиц в 1 bp для вашего масштаба:
+real user_unit_per_bp = (2 * b) / (7.5 * cm); 
+
+// Толщина вашей линии равна 2bp. Увеличиваем радиус ровно на 2bp:
+real line_thickness = 2 * user_unit_per_bp; 
+real d = 4 + 0*line_thickness; 
+// ------------------------------------
+
+
+//real d=4+1/cm;
+draw(Arc((0,c),d,0,-180),red+2bp);
+
+
+path curv=(0,c)--(d*Cos(-45),c+d*Sin(-45));
+draw(curv,gray,arrow=Arrow(2mm));
+label(Label("$r$",Relative(0.5)),curv,WSW);
+
+
+label(Label("$\delta$"),(d,c),N);
+label(Label("$H$"),(-b,0),E);
+label(Label("$H$"),(-b,-2c),E);
+dot((0,c),L=Label("$A$",black),N);
+
+
+//
+
+
+draw(Arc((0,-3c),d,0,180),blue+2bp);
+dot((0,-3c),L=Label("$B$",black),N);
+
+
+\end{asy}    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}
