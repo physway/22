@@ -9,12 +9,16 @@ jobs:
       - name: Set up Git Repository
         uses: actions/checkout@v4
 
-      # Используем официальный экшен от IslandofTeX
       - name: Compile LaTeX Document
-        uses: IslandofTeX/texlive-action@v2
+        uses: xu-cheng/latex-action@v3
         with:
-          # Устанавливаем системный пакет asymptote перед компиляцией
-          package_blocklist: ""
-          run: |
-            apt-get update && apt-get install -y asymptote
-            latexmk -pdf main.tex
+          root_file: main.tex
+          # Важно: используем образ full, где уже есть компилятор Asymptote
+          compiler: latexmk
+          image_tag: latest-full
+
+      - name: Upload PDF Result
+        uses: actions/upload-artifact@v4
+        with:
+          name: compiled-pdf
+          path: main.pdf
