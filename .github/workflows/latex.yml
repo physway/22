@@ -2,6 +2,9 @@ name: Compile LaTeX with Asymptote
 
 on: [push]
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -10,25 +13,31 @@ jobs:
       - name: Set up Git Repository
         uses: actions/checkout@v4
 
-      # Добавили пакет cm-super для поддержки русского языка в pdflatex
-      - name: Install LaTeX and Asymptote
+      # Добавили texlive-bibtex-extra и biber для работы с библиографией biblatex
+      - name: Install LaTeX, Asymptote and Bibliography Tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y texlive-latex-base texlive-latex-extra texlive-science texlive-lang-cyrillic cm-super asymptote
+          sudo apt-get install -y texlive-latex-base texlive-latex-extra texlive-science texlive-lang-cyrillic cm-super asymptote texlive-bibtex-extra biber
 
       - name: Compile Document
         run: |
-          # 1. Сборка для генерации временных .asy файлов
+          # 1. Первый проход создает временные файлы для Asymptote и Biber
           pdflatex -interaction=nonstopmode main.tex || true
           
-          # 2. Компиляция графики Asymptote
-          asy *.asy
+          # 2. Сборка графики Asymptote
+          asy *.asy || echo "No .asy files to compile"
           
-          # 3. Финальная сборка со вшитой графикой
+          # 3. Сборка библиографии через biber
+          biber main || echo "No bibliography to compile"
+          
+          # 4. Финальные проходы для корректной расстановки ссылок и картинок
+          pdflatex -interaction=nonstopmode main.tex
           pdflatex -interaction=nonstopmode main.tex
 
-      - name: Upload PDF Result
-        uses: actions/upload-artifact@v4
-        with:
-          name: compiled-pdf
-          path: main.pdf
+      - name: Commit and Push PDF
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@://github.com"
+          git add main.pdf
+          git commit -m "Automated PDF generation with biblatex" || echo "No changes to commit"
+          git push
