@@ -13,7 +13,6 @@ jobs:
       - name: Set up Git Repository
         uses: actions/checkout@v4
 
-      # Добавили inkscape для работы с SVG графикой
       - name: Install LaTeX, Asymptote and Inkscape
         run: |
           sudo apt-get update
@@ -21,19 +20,23 @@ jobs:
 
       - name: Compile Document
         run: |
-          # Везде добавляем флаг -shell-escape, чтобы LaTeX мог вызывать Inkscape
-          pdflatex -interaction=nonstopmode -shell-escape main.tex || true
+          # Флаг -jobname задает имя итогового файла. Мы назвали его diploma_final
+          pdflatex -interaction=nonstopmode -shell-escape -jobname=diploma_final main.tex || true
           
           asy *.asy || echo "No .asy files to compile"
-          biber main || echo "No bibliography to compile"
           
-          pdflatex -interaction=nonstopmode -shell-escape main.tex || true
-          pdflatex -interaction=nonstopmode -shell-escape main.tex || true
+          # ВАЖНО: biber теперь должен обрабатывать именно технический файл diploma_final, а не main
+          biber diploma_final || echo "No bibliography to compile"
+          
+          pdflatex -interaction=nonstopmode -shell-escape -jobname=diploma_final main.tex || true
+          pdflatex -interaction=nonstopmode -shell-escape -jobname=diploma_final main.tex || true
 
       - name: Commit and Push PDF
         run: |
           git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add 22.pdf
-          git commit -m "Automated PDF generation with SVG and Asymptote" || echo "No changes to commit"
+          git config --global user.email "41898282+github-actions[bot]@://github.com"
+          
+          # Добавляем в репозиторий файл с новым красивым именем
+          git add diploma_final.pdf
+          git commit -m "Automated PDF generation (diploma_final.pdf)" || echo "No changes to commit"
           git push
