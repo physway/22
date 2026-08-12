@@ -2,15 +2,18 @@
 \usepackage[utf8]{inputenc}
 \usepackage[russian]{babel}
 
-\title{Автоматическая сборка LaTeX}
-\author{Ваше Имя}
-\date{\today}
+% Подключаем asymptote
+\usepackage[inline]{asymptote} 
 
 \begin{document}
 
-\maketitle
+Встроенный рисунок Asymptote:
 
-\section{Введение}
-Этот PDF-документ был автоматически скомпилирован с помощью GitHub Actions!
+\begin{asy}
+    size(100);
+    draw((0,0)--(100,100), red);
+    draw((0,100)--(100,0), blue);
+\end{asy}
+
 
 \end{document}
