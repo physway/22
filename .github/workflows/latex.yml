@@ -12,10 +12,14 @@ jobs:
       - name: Compile LaTeX Document
         uses: xu-cheng/latex-action@v3
         with:
-          root_file: main.tex
-          # Важно: используем образ full, где уже есть компилятор Asymptote
-          compiler: latexmk
+          # Важно: берем полный образ TeX Live, где точно есть asy
           image_tag: latest-full
+          # Выполняем ручную пошаговую сборку вместо автоматического latexmk
+          compiler: pdflatex
+          root_file: main.tex
+          # Передаем команды последовательно: 
+          # 1. Сборка TeX -> 2. Сборка ВСЕХ картинок Asymptote -> 3. Финальная сборка PDF
+          args: -interaction=nonstopmode && asy *.asy && pdflatex -interaction=nonstopmode main.tex
 
       - name: Upload PDF Result
         uses: actions/upload-artifact@v4
