@@ -1,25 +1,20 @@
-name: Compile LaTeX
+name: Compile LaTeX with Asymptote
 
-# Робот будет запускаться при каждом изменении (push) в репозитории
 on: [push]
 
 jobs:
-  build_latex:
+  build:
     runs-on: ubuntu-latest
     steps:
-      # 1. Скачиваем файлы из вашего репозитория на виртуальную машину
       - name: Set up Git Repository
         uses: actions/checkout@v4
 
-      # 2. Запускаем компиляцию LaTeX (по умолчанию используется pdfLaTeX)
+      # Используем официальный экшен от IslandofTeX
       - name: Compile LaTeX Document
-        uses: xu-cheng/latex-action@v3
+        uses: IslandofTeX/texlive-action@v2
         with:
-          root_file: main.tex
-
-      # 3. Сохраняем готовый PDF в архив (артефакты сборки)
-      - name: Upload PDF Result
-        uses: actions/upload-artifact@v4
-        with:
-          name: PDF-Document
-          path: main.pdf
+          # Устанавливаем системный пакет asymptote перед компиляцией
+          package_blocklist: ""
+          run: |
+            apt-get update && apt-get install -y asymptote
+            latexmk -pdf main.tex
