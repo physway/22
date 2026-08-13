@@ -1,0 +1,120 @@
+\ProvidesPackage{pre}
+
+\usepackage[T1,T2A]{fontenc} 
+\usepackage[english, russian]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage[dvipsnames]{xcolor}
+\definecolor{mybluelinks}{RGB}{0, 71, 211}
+\hypersetup{
+    pdfauthor={И. И. Кравченко},
+    colorlinks=true,
+    linkcolor=mybluelinks,
+    citecolor=mybluelinks,
+    urlcolor=mybluelinks,
+    pdftitle={Стекло и метеориты},
+    pdfpagemode=UseNone,
+    pdfstartview=FitH
+    }
+\usepackage[a4paper,%showframe,
+            top=1in,
+            bottom=1in,
+            left=3cm,
+            right=3cm]{geometry}
+% \usepackage{fancyhdr}
+% \pagestyle{fancy}
+% \fancyhead{}
+% \fancyhead[C]{\small \hfill \small{И.\,И.\,Кравченко. Заметки по олимпфизу. Сайт \textup{\href{https://physfor.github.io}{\texttt{physfor.github.io}}.}}}
+% \renewcommand{\headrulewidth}{0pt}
+% \setlength{\headheight}{14.5pt}
+
+\usepackage[sorting=none,maxnames=1000,autolang=other]{biblatex}
+\addbibresource{bibliography.bib}
+\usepackage{csquotes}
+\usepackage{tikz}
+\usepackage{calc}
+\usepackage{etoolbox}
+\usepackage{varwidth}
+\usepackage{wrapfig}
+\usetikzlibrary {arrows.meta}
+\usetikzlibrary {angles,quotes}
+\usetikzlibrary { decorations.pathmorphing, decorations.pathreplacing, decorations.shapes}
+\usetikzlibrary {intersections}
+\usepackage{epigraph}
+\epigraphrule=0pt
+% \usepackage{showframe}
+\usepackage{mathrsfs}
+\usepackage{tcolorbox}
+\newtcbox{\ansbox}{on line,size=fbox,opacityback=0,standard jigsaw,arc=1mm}
+\newtcolorbox{rambox}{opacityback=0,standard jigsaw}
+\usepackage[europeanresistors,americaninductors,americanvoltages]{circuitikz}
+\usepackage{asymptote}
+\usepackage{svg}
+\usepackage{ocg-p,eso-pic}
+\def\col{211}
+\definecolor{page}{RGB}{232, 227, 216}
+\AddToShipoutPictureBG
+{\begin{ocg}[printocg=never]{backgroundcolor}{oc1}{1}
+  \tikz[overlay,remember picture]\fill[page](current page.north east)rectangle (current page.south west);
+ \end{ocg}}
+
+
+% hyp math
+\newcommand*{\hm}[1]{#1\nobreak\discretionary{}%
+{\hbox{$\mathsurround=0pt #1$}}{}}
+
+%bib
+\renewcommand*{\bibnamedelimd}{\addnbspace}
+
+
+\renewcommand{\'}{\accent1}
+
+
+\newcommand{\zad}[1]{\par\addvspace{1.3\bigskipamount}%
+\vbox{#1}}
+
+\newcounter{task}
+\newcommand{\task}{\par\addvspace{0\bigskipamount}%
+\refstepcounter{task}
+\noindent\textsc{Задача \arabic{task}.} }
+
+\newcommand{\sol}{\par\addvspace{\medskipamount}
+\noindent\emph{Решение.} }
+
+\newcounter{z}
+\newcommand{\z}{\par\addvspace{\bigskipamount}
+\refstepcounter{z}
+\noindent\textbf{Задание \arabic{z}.} }
+
+\newcommand{\q}{\par\addvspace{\bigskipamount}
+\noindent\textbf{Вопрос.} }
+
+% \newcommand{\ans}[1]{\par\addvspace{\smallskipamount}\hfill\fbox {#1}%
+% }
+
+% \newcommand{\ans}[1]{\par\addvspace{\smallskipamount}%
+% \hfill\noindent\fbox{%
+%     \begin{varwidth}{\linewidth}% maximal of linewidth
+%         #1\end{varwidth}%
+%     }%
+% }
+
+\newcommand{\ans}[1]{\par\addvspace{\smallskipamount}%
+\hfill\noindent\ansbox{%
+    \begin{varwidth}{\linewidth}% maximal of linewidth
+        #1\end{varwidth}%
+    }%
+}
+
+
+%%tikz
+\tikzset{every picture/.style={
+font=\small,thin,
+line cap=round,line join=round,
+>={Stealth[inset=0pt,round,length=3mm, angle'=20]},
+vec/.style={>={Stealth[inset=0pt,round,length=3.5mm, angle'=20]}}}
+}
+
+%%circuitikz 
+\ctikzset{bipoles/americaninductor/coils=3}

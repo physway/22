@@ -1,0 +1,44 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage{pre} % преамбула и настр
+
+
+\title{Стекло и метеориты}
+\author{И.\,И.\,Кравченко}
+
+
+\begin{document}
+
+
+\renewcommand\refname{Литература}
+
+
+\maketitle
+
+
+Решаем задачу по физике про наложение и отражение волн из сборника Савченко~\cite{sa08}. Опубликовано впервые на \href{https://savchenkosolutions.com/ru/3.8.7}{<<Savchenko Solutions>>}.
+
+\medskip
+
+\def\fw{\linewidth-2\fboxsep-\fboxrule}
+\noindent\fbox{%
+    \parbox{\linewidth-2\fboxsep-2\fboxrule}{%
+    \textbf{3.8.7.} На внешней стороне стекла иллюминатора космического корабля имеются разрушения, вызванные попаданием микрометеоритов. Подобные же разрушения видны на внутренней стороне. Объясните их появление.%
+    \begin{center}
+        \includesvg[width=.4\linewidth]{pic0}
+    \end{center}
+    %
+    }%
+}   
+
+
+\input{text1}
+\nocite{*}
+
+
+\input{text2}
+
+
+\printbibliography
+
+
+\end{document}
