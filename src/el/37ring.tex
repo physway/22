@@ -1,0 +1,413 @@
+\documentclass[main.tex]{subfiles}
+
+
+\begin{document}
+
+%from pagenumber to up
+% \phantomsection 
+% \hypertarget{toc}{}
+
+\pagestyle{empty}
+
+\begin{NoHyper} % отключить клик-ссылки
+
+% номер секции вручную
+\setcounter{section}{33
+}
+\addtocounter{section}{-1} 
+
+\section{Магнитное поле кольца с током}
+
+
+Пусть имеется провод в форме кольца, через который протекает электрический ток. На рис.\,\ref{fig:p149} показана картина линий магнитного поля кольца с током.
+
+\makeatletter
+
+\pgfkeys{/pgf/decoration/.cd,
+         start color/.store in =\startcolor,
+         end color/.store in   =\endcolor
+}
+
+\pgfdeclaredecoration{width and color change}{initial}{
+ \state{initial}[width=0pt, next state=line, persistent precomputation={%
+   \pgfmathdivide{50}{\pgfdecoratedpathlength}%
+   \let\increment=\pgfmathresult%
+   \def\x{0}%
+ }]{}
+ \state{line}[width=.5pt,   persistent postcomputation={%
+     \pgfmathadd@{\x}{\increment}%
+     \let\x=\pgfmathresult%
+   }]{%
+   \pgfsetlinewidth{\x/150*0.035pt+\pgflinewidth}%
+   \pgfsetarrows{-}%
+   \pgfpathmoveto{\pgfpointorigin}%
+   \pgfpathlineto{\pgfqpoint{.75pt}{0pt}}%
+   \pgfsetstrokecolor{\endcolor!\x!\startcolor}%
+   \pgfusepath{stroke}%
+ }
+ \state{final}{%
+   \pgfsetlinewidth{\pgflinewidth}%
+   \pgfpathmoveto{\pgfpointorigin}%
+   \color{\endcolor!\x!\startcolor}%
+   \pgfusepath{stroke}% 
+ }
+}
+
+\makeatother
+
+
+    \begin{figure}[H]
+    \centering
+
+    \begin{tikzpicture}[font=\small,            line cap=round,                             >={Stealth[bend,inset=0pt,round,length=3mm, angle'=20]},vec/.style={>={Stealth[inset=0pt,round,length=3.5mm, angle'=20]}}]
+
+
+\def\lm{1} 
+\def\xr{.25}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+    
+%lines left
+%1
+\def\ds{.4}
+\path[yshift=.75cm,->] (0.25,0) 
+arc [start angle=-90, end angle=0, x radius={\ds*1cm}, y radius={\ds*1cm-.02cm}]
+arc [start angle=0, end angle=90, x radius={\ds*1cm}, y radius={\ds*1cm+.05cm}]
+coordinate (e1)
+;
+
+\draw[gray,yshift=.75cm] (e1) 
+arc [start angle=90, end angle=180, x radius={\ds*1cm}, y radius={\ds*1cm+.05cm}] 
+arc [start angle=180, end angle=270, x radius={\ds*1cm}, y radius={\ds*1cm-.02cm}] 
+;
+
+
+%2
+\def\df{.9}
+\path[yshift=.5cm,->] (0.25,0) 
+arc [start angle=-90, end angle=0, x radius={\df*1cm}, y radius={\df*1cm-.1cm}]
+arc [start angle=0, end angle=90, x radius={\df*1cm}, y radius={\df*1cm+.1cm}]
+coordinate (e1)
+;
+
+\draw[gray,yshift=.5cm] (e1) 
+arc [start angle=90, end angle=180, x radius={\df*1cm}, y radius={\df*1cm+.05cm}] 
+arc [start angle=180, end angle=270, x radius={\df*1cm}, y radius={\df*1cm-.05cm}] 
+;
+
+
+%3
+\def\dg{1.5}
+\path[yshift=.25cm,->] (0.25,0) 
+arc [start angle=-90, end angle=0, x radius={\dg*1cm}, y radius={\dg*1cm-.1cm}]
+arc [start angle=0, end angle=90, x radius={\dg*1cm}, y radius={\dg*1cm+.1cm}]
+coordinate (e1)
+;
+
+\draw[gray,yshift=.5cm] (e1) 
+arc [start angle=90, end angle=180, x radius={\dg*1cm}, y radius={\dg*1cm+.05cm}] 
+arc [start angle=180, end angle=270, x radius={\dg*1cm}, y radius={\dg*1cm-.05cm}] 
+;
+
+%reverse
+\begin{scope}[yscale=-1,gray]
+
+%1
+\path[yshift=.75cm,->] (0.25,0) 
+arc [start angle=-90, end angle=0, x radius={\ds*1cm}, y radius={\ds*1cm-.02cm}]
+arc [start angle=0, end angle=90, x radius={\ds*1cm}, y radius={\ds*1cm+.05cm}]
+coordinate (e1)
+;
+
+\draw[yshift=.75cm] (e1) 
+arc [start angle=90, end angle=180, x radius={\ds*1cm}, y radius={\ds*1cm+.05cm}] 
+arc [start angle=180, end angle=270, x radius={\ds*1cm}, y radius={\ds*1cm-.02cm}] 
+;
+
+
+%2
+\def\df{.9}
+\path[yshift=.5cm,->] (0.25,0) 
+arc [start angle=-90, end angle=0, x radius={\df*1cm}, y radius={\df*1cm-.1cm}]
+arc [start angle=0, end angle=90, x radius={\df*1cm}, y radius={\df*1cm+.1cm}]
+coordinate (e1)
+;
+
+\draw[yshift=.5cm] (e1) 
+arc [start angle=90, end angle=180, x radius={\df*1cm}, y radius={\df*1cm+.05cm}] 
+arc [start angle=180, end angle=270, x radius={\df*1cm}, y radius={\df*1cm-.05cm}] 
+;
+
+
+%3
+\def\dg{1.5}
+\path[yshift=.25cm,->] (0.25,0) 
+arc [start angle=-90, end angle=0, x radius={\dg*1cm}, y radius={\dg*1cm-.1cm}]
+arc [start angle=0, end angle=90, x radius={\dg*1cm}, y radius={\dg*1cm+.1cm}]
+coordinate (e1)
+;
+
+\draw[yshift=.5cm] (e1) 
+arc [start angle=90, end angle=180, x radius={\dg*1cm}, y radius={\dg*1cm+.05cm}] 
+arc [start angle=180, end angle=270, x radius={\dg*1cm}, y radius={\dg*1cm-.05cm}] 
+;
+
+\draw[decoration={markings,mark=at position {1/2+1.5/20} with {\arrow{<}}},postaction={decorate}] (.25,0) --++ (-2,0);
+
+\end{scope}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%ring
+\begin{scope}
+    
+\draw[line width=.4pt, decoration={width and color change,start color=brown, end color=brown}, decorate] (0.5,{.0pt})
+arc [start angle={0}, end angle={180}, x radius={\xr*1cm}, y radius=1cm] 
+% arc [start angle=270, end angle=180, x radius=.5cm, y radius=1cm] 
+;
+
+\draw[line width=.4pt, decoration={width and color change,start color=brown, end color=brown}, decorate] (0.5,{-.0pt})
+% arc [start angle={90}, end angle={180}, x radius=.5cm, y radius=1cm] 
+arc [start angle=360, end angle=180, x radius={\xr*1cm}, y radius=1cm] 
+;
+
+%arrows
+\path[red,->,thin] (-0.2,0)
+% arc [start angle={90}, end angle={180}, x radius=.5cm, y radius=1cm] 
+arc [start angle=180, end angle=190, x radius={\xr*1cm}, y radius=1cm] coordinate (a) 
+;
+
+\draw[red,->,thin] (a)
+% arc [start angle={90}, end angle={180}, x radius=.5cm, y radius=1cm] 
+arc [start angle=190, end angle=260, x radius={\xr*1cm}, y radius=1cm] node[black,below right,shift={(-.16,.07)}] {$I$}
+;
+
+\end{scope}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%lines right
+%1
+\draw[gray,yshift=.75cm,->] (0.25,0) 
+arc [start angle=-90, end angle=0, x radius={\ds*1cm}, y radius={\ds*1cm-.02cm}]
+arc [start angle=0, end angle=90, x radius={\ds*1cm}, y radius={\ds*1cm+.05cm}]
+coordinate (e1)
+;
+
+
+%2
+\draw[gray,yshift=.5cm,->] (0.25,0) 
+arc [start angle=-90, end angle=0, x radius={\df*1cm}, y radius={\df*1cm-.1cm}]
+arc [start angle=0, end angle=90, x radius={\df*1cm}, y radius={\df*1cm+.1cm}]
+coordinate (e1)
+;
+
+
+%3
+\def\dg{1.5}
+\draw[gray,yshift=.25cm,->] (0.25,0) 
+arc [start angle=-90, end angle=0, x radius={\dg*1cm}, y radius={\dg*1cm-.1cm}]
+arc [start angle=0, end angle=90, x radius={\dg*1cm}, y radius={\dg*1cm+.1cm}]
+coordinate (e1)
+;
+
+
+%reverse
+\begin{scope}[yscale=-1,gray]
+
+%1
+\draw[yshift=.75cm,->] (0.25,0) 
+arc [start angle=-90, end angle=0, x radius={\ds*1cm}, y radius={\ds*1cm-.02cm}]
+arc [start angle=0, end angle=90, x radius={\ds*1cm}, y radius={\ds*1cm+.05cm}]
+coordinate (e1)
+;
+
+
+%2
+\draw[yshift=.5cm,->] (0.25,0) 
+arc [start angle=-90, end angle=0, x radius={\df*1cm}, y radius={\df*1cm-.1cm}]
+arc [start angle=0, end angle=90, x radius={\df*1cm}, y radius={\df*1cm+.1cm}]
+coordinate (e1)
+;
+
+
+%3
+\def\dg{1.5}
+\draw[yshift=.25cm,->] (0.25,0) 
+arc [start angle=-90, end angle=0, x radius={\dg*1cm}, y radius={\dg*1cm-.1cm}]
+arc [start angle=0, end angle=90, x radius={\dg*1cm}, y radius={\dg*1cm+.1cm}]
+coordinate (e1)
+;
+
+\draw[decoration={markings,mark=at position {1/2+1.5/20} with {\arrow{>}}},postaction={decorate}] (.25,0) --++ (2,0);
+
+\end{scope}
+
+    
+    \end{tikzpicture}
+\caption{Линии магнитного поля кольцевого провода с током}
+\label{fig:p149}
+\end{figure}
+
+
+% Через любую точку пространства вне кольца можно провести соответствующую линию его магнитного поля. С удалением от кольца густота линий поля убывает (убывает индукция магнитного поля).
+
+Линии поля кольца как бы выходят из него со одной стороны и входят в него с другой стороны (внутри кольца линии замыкаются).
+
+Для определения того, с какой стороны из кольца выходят линии его магнитного поля, можно воспользоваться следующим правилом.
+%
+\begin{law}
+    \textbf{Правило правой руки.} Направление линий магнитного поля \emph{внутри} кольца укажет большой палец правой руки, если остальные согнутые пальцы (охватывающие кольцо) расположены так, что они указывают направление тока кольца.
+\end{law}
+%
+Рисунок~\ref{fig:p150} иллюстрирует применение этого правила.  
+
+    \begin{figure}[H]
+    \centering
+\begin{asy}
+settings.outformat="png";
+// settings.prc=true;
+settings.render=10;
+
+import three;
+import texcolors;
+import x11colors;
+import solids;
+size(10cm,0);
+currentprojection =
+orthographic((5,3,1.5));
+
+
+//styles
+///////////////////////////////////////////
+DefaultHead3.size=new real(pen p=currentpen) {return 3mm;};
+defaultpen(fontsize(11pt));
+defaultpen(linewidth(0.4pt));
+pen thick=black+2*linewidth(currentpen);
+/////////////////////////////////////////
+
+
+//draw(surface(path3D), lightgray+opacity(.5));
+//draw(path3D, Chocolate+thick,L=Label("$S$",EndPoint,N,black));
+
+//axes
+//draw(O--2.5X,L=Label("$x$",EndPoint,WSW));
+//draw(O--2.3Y,L=Label("$y$",EndPoint,ESE));
+//draw(O--3Z,L=Label("$\vec n$",EndPoint,W),Arrow3(angle=10));
+//draw(O--rotate(-30,X)*4Z,Green+thick,L=Label("$\vec B$",EndPoint,E,black),Arrow3(3.5mm,angle=10,emissive(Green)));
+
+//draw("$\alpha$",reverse(arc(O,0.8*Z,rotate(-30,X)*0.8*Z)),N+0.3E);
+
+
+//curr
+//cylinder1
+path3 c2=circle((-.8,2.2,0),0.1,Z);
+revolution sur1=revolution((0,0,0),c2,Y,0,360);
+draw(surface(sur1),orange);
+
+path3 arc1=arc((0,2,0),1.1,70,0,135,0,CCW);
+draw(arc1,red+thick,L=Label("$I$",MidPoint,W,white),Arrow3(3.5mm,angle=10,emissive(red)));
+
+
+////////////////////////////////////////
+//plates
+real a=2;
+path3 pl=((0,-a,-a)--(0,-a,a)--(0,a,a)--(0,a,-a)--cycle); 
+draw(shift(-1,0,0)*surface(pl), lightgray+opacity(1));
+draw(shift(-2,0,0)*surface(pl), lightgray+opacity(1));
+
+//cyl
+triple pO=(-1.5,2,-2);
+revolution cyl=cylinder(pO,.5,4,Z);
+draw(surface(cyl),lightgray);
+
+triple pO=(-1.5,-2,-2);
+revolution cyl=cylinder(pO,.5,4,Z);
+draw(surface(cyl),lightgray);
+
+triple pO=(-1.5,-2,2);
+revolution cyl=cylinder(pO,.5,4,Y);
+draw(surface(cyl),lightgray);
+
+triple pO=(-1.5,-2,-2);
+revolution cyl=cylinder(pO,.5,4,Y);
+draw(surface(cyl),lightgray);
+
+//sphere
+draw(shift(-1.5,2,-2)*scale3(.5)*unitsphere,lightgray);
+draw(shift(-1.5,2,2)*scale3(.5)*unitsphere,lightgray);
+draw(shift(-1.5,-2,-2)*scale3(.5)*unitsphere,lightgray);
+draw(shift(-1.5,-2,2)*scale3(.5)*unitsphere,lightgray);
+
+
+//fingers
+for (int n = 0; n <= 3; ++n) {
+
+triple f1=(-1.5,a,a);
+revolution cyl=cylinder(f1,.5,((5/8)*2a),Z);
+draw(rotate(-60,(-1.5,a,a),(-1.5,-a,a))*shift(0,(-1-.333)*n,0)*surface(cyl),lightgray);
+  
+triple f2=(shift((5/8)*2a*Sin(60),0,(5/8)*2a*Cos(60))*f1);
+revolution cyl=cylinder(f2,.5,((3/8)*2a),Z);
+draw(rotate(-60-70,f2,shift(0,-1,0)*f2)*shift(0,(-1-.333)*n,0)*surface(cyl),lightgray);
+draw(shift(f2)*shift(0,(-1-.333)*n,0)*scale3(.5)*unitsphere,lightgray);
+  
+//dot(shift((3/8)*2a*Sin(60+70),0,(3/8)*2a*Cos(60+70))*f2,red);
+triple f3=(shift((3/8)*2a*Sin(60+70),0,(3/8)*2a*Cos(60+70))*f2);
+revolution cyl=cylinder(f3,.5,((2/8)*2a),Z);
+draw(rotate(-60-70-50,f3,shift(0,-1,0)*f3)*shift(0,(-1-.333)*n,0)*surface(cyl),lightgray);
+draw(shift(f3)*shift(0,(-1-.333)*n,0)*scale3(.5)*unitsphere,lightgray);
+  
+triple f4=(shift((2/8)*2a*Sin(60+70+50),0,(2/8)*2a*Cos(60+70+50))*f3);
+draw(shift(f4)*shift(0,(-1-.333)*n,0)*scale3(.5)*unitsphere,lightgray);
+
+}
+
+
+//big fing
+triple pO=(-1.5,2,-2);
+revolution cyl=cylinder(pO,.5,2,Y);
+draw(rotate(-10,pO,shift(-1,0,0)*pO)*surface(cyl),lightgray);
+
+triple bf=(shift(0,(4/8)*2a*Cos(10),(4/8)*2a*Sin(10))*pO);
+revolution cyl=cylinder(bf,.5,((2.5/8)*2a),Y);
+draw(surface(cyl),lightgray);
+draw(shift(bf)*scale3(.5)*unitsphere,lightgray);
+draw(shift(0,(2.5/8)*2a,0)*shift(bf)*scale3(.5)*unitsphere,lightgray);
+
+
+
+
+\end{asy}
+\caption{Правило правой руки}
+\label{fig:p150}
+\end{figure}
+
+
+Соотнося рисунки~\ref{fig:p149} и~\ref{fig:p150}, можно видеть, что большой палец на рис.\,\ref{fig:p150} указывает направление линий магнитного поля внутри кольца.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{NoHyper}
+\end{document}

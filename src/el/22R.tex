@@ -1,0 +1,184 @@
+\documentclass[main.tex]{subfiles}
+
+
+\begin{document}
+
+%from pagenumber to up
+% \phantomsection 
+% \hypertarget{toc}{}
+
+\pagestyle{empty}
+
+\begin{NoHyper} % отключить клик-ссылки
+
+% номер секции вручную
+\setcounter{section}{18
+}
+\addtocounter{section}{-1} 
+
+\section{Сопротивление}
+
+
+\textbf{Сопротивление} ($R$ [Ом])~--- это характеристика проводника, показывающая его способность препятствовать прохождению тока через него. Например, если проводник~А подключить к батарейке, а затем (отсоединив проводник~А от батарейки) проводник~Б подключить к этой же батарейке, то сопротивление будет \emph{больше} у того проводника, в котором \emph{сила тока} была \emph{меньше}.   
+
+Пусть имеются три медных провода (рис.\,\ref{fig:p118}).
+
+    \begin{figure}[H]
+    \centering
+\begin{asy}
+settings.outformat="png";
+// settings.prc=true;
+settings.render=15;
+
+import three;
+import texcolors;
+import x11colors;
+import solids;
+texpreamble("\usepackage[T2A]{fontenc}\usepackage[utf8]{inputenc}
+\usepackage{mathtext}\usepackage[russian]{babel}");
+size(6cm,0);
+currentprojection =
+perspective((10,15,10));
+
+
+//styles
+///////////////////////////////////////////
+DefaultHead3.size=new real(pen p=currentpen) {return 3mm;};
+defaultpen(fontsize(11pt));
+defaultpen(linewidth(0.4pt));
+pen thick=black+2*linewidth(currentpen);
+/////////////////////////////////////////
+
+
+//axes
+//draw(O--2.5X,L=Label("$x$",EndPoint,WSW));
+//draw(O--2.3Y,L=Label("$y$",EndPoint,ESE));
+transform3 t=shift(-2,-2,0);
+
+
+real a=4;
+
+
+/////////////////////////////////////////////
+//cylinder1
+triple pO=(0,-4,0);
+revolution cyl=cylinder(pO,.1,8,Y);
+draw(surface(cyl),orange);
+draw(shift(0,a,0)*rotate(-90,X)*scale3(.1)*unitdisk,orange);
+draw(shift(0,-a,0)*rotate(-90,X)*scale3(.1)*unitdisk,orange);
+path3 l=(.1,-a,0)--(.1,a,0);
+label("А",(0,-4,.1),N);
+
+
+//cylinder2
+triple pO=(0,-4,0);
+revolution cyl=cylinder(pO,.5,8,Y);
+draw(shift(-1.6,0,0)*surface(cyl),orange);
+draw(shift(-1.6,a,0)*rotate(-90,X)*scale3(.5)*unitdisk,orange);
+draw(shift(-1.6,-a,0)*rotate(-90,X)*scale3(.5)*unitdisk,orange);
+path3 l=(.1,-a,0)--(.1,a,0);
+label("Б",(-1.6,-4,.5),N);
+
+
+//cylinder3
+triple pO=(0,-4,0);
+revolution cyl=cylinder(pO,.5,4,Y);
+draw(shift(-3.6,2,0)*surface(cyl),orange);
+draw(shift(-3.6,-2,0)*rotate(-90,X)*scale3(.5)*unitdisk,orange);
+draw(shift(-3.6,2,0)*rotate(-90,X)*scale3(.5)*unitdisk,orange);
+path3 l=(.1,-a,0)--(.1,a,0);
+label("В",(-3.6,-2,.5),N);
+
+
+\end{asy}
+\caption{Три проводника}
+\label{fig:p118}
+\end{figure}
+
+Провода~А, Б и~В имеют сопротивления~$R_\text{А}$, $R_\text{Б}$ и~$R_\text{В}$. Опыт показывает, что их сопротивления связаны так: $R_\text{А}>R_\text{Б}>R_\text{В}$. Сравнивать сопротивления тел из одинакового материала можно, используя следующую аналогию: чем <<проще>> протечь воображаемой жидкости через тело, представляемое как <<труба>> (то есть чем шире и короче <<труба>>), тем меньше сопротивление тела.  
+
+\textbf{Сопротивление проводника} вычисляется по формуле:
+\begin{equation}
+    R=\frac{\rho_\text{э}l}{S},
+\end{equation}
+где $\rho_\text{э}$~--- \emph{удельное сопротивление} вещества (см.~справочные таблицы), $l$~--- длина проводника, $S$~--- площадь поперечного сечения проводника\footnote{Или площадь поперечной грани (торца) тела, из которой предполагается <<вытекает>> ток.}. 
+
+
+Сопротивление прохождению тока, например, в металлах объясняют тем, что свободные электроны, совершая направленное движение, сталкиваются с ионами металла, колеблющимися вблизи своих положений равновесия (рис.\,\ref{fig:p120}).
+
+    \begin{figure}[H]
+    \centering
+
+    \begin{tikzpicture}[font=\small,            line cap=round,                             >={Stealth[inset=0pt,round,length=3mm, angle'=20]},vec/.style={>={Stealth[inset=0pt,round,length=3.5mm, angle'=20]}}]
+
+
+% \tikzset{atom/.pic={
+%   \begin{scope}[shift={({rnd*360}:.05)}]
+%   \shade[ball color=red] (0,0) circle (\dn);
+%   % \shade[ball color=NavyBlue!70,rotate={rnd*360}] ([shift={(180:{.4 cm})}]0,0) circle (\de);
+%   \end{scope}}
+% }
+
+\tikzset{ion/.pic={
+  \begin{scope}[transparency group,nearly transparent]
+  \begin{scope}[transparency group,semitransparent]
+  \shade[ball color=red] ([shift={(rand*180:rnd*\de cm)}]0,0) circle (\dn);
+  \end{scope}
+  \begin{scope}[transparency group]
+  \shade[ball color=red] ([shift={(rand*180:{rnd*\de cm})}]0,0) circle (\dn);
+  \end{scope}
+  \end{scope}
+  \shade[ball color=red] ([shift={(rand*180:{rnd*\de cm})}]0,0) circle (\dn);}
+}
+
+\tikzset{es/.pic={
+  \begin{scope}[transparency group,nearly transparent]
+  \begin{scope}[transparency group,semitransparent]
+  \shade[ball color=NavyBlue!70] ([shift={(180:2*\de cm)}]0,0) circle (\de);
+  \end{scope}
+  \begin{scope}[transparency group]
+  \shade[ball color=NavyBlue!70] ([shift={(180:{\de cm})}]0,0) circle (\de);
+  \end{scope}
+  \end{scope}
+  \shade[ball color=NavyBlue!70] (0,0) circle (\de);}
+}
+
+\def\dn{.15}
+\def\de{.1}
+
+
+%atoms left
+\foreach \y in {0,...,1}{
+\foreach \x in {0,...,4}{
+\pic[] at ({\x},{\y}) {ion};
+\pic[] at ([shift={(rnd*360:{.4 cm})}]\x,\y) {es};
+}}
+
+
+    \end{tikzpicture}
+\caption{Направленное движение электронов между ионами металла}
+\label{fig:p120}
+\end{figure}
+
+Проводник, обладающий сопротивлением, называют \emph{резистором} и изображают на схемах следующим образом (рис.\,\ref{fig:p121}).
+
+    \begin{figure}[H]
+    \centering
+\begin{circuitikz}[font=\small,thin,
+    line cap=round,line join=round,
+>={Stealth[inset=0pt,round,length=3mm, angle'=20]},
+vec/.style={>={Stealth[inset=0pt,round,length=3.5mm, angle'=20]}}]
+
+    \ctikzset{bipoles/americaninductor/coils=3}
+
+    \draw (0,1) to[*R=$R$] ++ (2,0);
+
+\end{circuitikz}
+\caption{Резистор}
+\label{fig:p121}
+\end{figure}
+
+
+
+\end{NoHyper}
+\end{document}

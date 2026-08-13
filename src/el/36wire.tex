@@ -1,0 +1,286 @@
+\documentclass[main.tex]{subfiles}
+
+
+\begin{document}
+
+%from pagenumber to up
+% \phantomsection 
+% \hypertarget{toc}{}
+\pagestyle{empty}
+
+\begin{NoHyper} % отключить клик-ссылки
+
+% номер секции вручную
+\setcounter{section}{32
+}
+\addtocounter{section}{-1} 
+
+\section{Магнитное поле прямого провода с током}
+
+
+Пусть имеется прямой провод, через который протекает электрический ток. На рис.\,\ref{fig:p147} показана картина линий магнитного поля вокруг провода в таком случае.
+
+
+\makeatletter
+
+\pgfkeys{/pgf/decoration/.cd,
+         start color/.store in =\startcolor,
+         end color/.store in   =\endcolor
+}
+
+\pgfdeclaredecoration{width and color change}{initial}{
+ \state{initial}[width=0pt, next state=line, persistent precomputation={%
+   \pgfmathdivide{50}{\pgfdecoratedpathlength}%
+   \let\increment=\pgfmathresult%
+   \def\x{0}%
+ }]{}
+ \state{line}[width=.5pt,   persistent postcomputation={%
+     \pgfmathadd@{\x}{\increment}%
+     \let\x=\pgfmathresult%
+   }]{%
+   \pgfsetlinewidth{\x/150*0.035pt+\pgflinewidth}%
+   \pgfsetarrows{-}%
+   \pgfpathmoveto{\pgfpointorigin}%
+   \pgfpathlineto{\pgfqpoint{.75pt}{0pt}}%
+   \pgfsetstrokecolor{\endcolor!\x!\startcolor}%
+   \pgfusepath{stroke}%
+ }
+ \state{final}{%
+   \pgfsetlinewidth{\pgflinewidth}%
+   \pgfpathmoveto{\pgfpointorigin}%
+   \color{\endcolor!\x!\startcolor}%
+   \pgfusepath{stroke}% 
+ }
+}
+
+\makeatother
+
+
+    \begin{figure}[H]
+    \centering
+
+    \begin{tikzpicture}[font=\small,            line cap=round,                             >={Stealth[bend,inset=0pt,round,length=3mm, angle'=20]},vec/.style={>={Stealth[inset=0pt,round,length=3.5mm, angle'=20]}}]
+
+
+\draw[thick,brown] (-1.5,0) coordinate (I) -- (6,0);
+
+
+%lines
+% \foreach \i in {1,2,...,89}{
+% \draw[] (0,1) 
+% arc [start angle={90*1cm-\i*1cm}, end angle={270*1cm-\i*1cm}, x radius=.5cm, y radius=1cm] 
+% % arc [start angle=270, end angle=450, x radius=.5cm, y radius=1cm] 
+% ;
+% }
+
+\def\xr{.25}
+\begin{scope}[]
+    
+\foreach \i in {0,1,2,3,4}{
+\draw[xshift={\i*1cm},line width=.4pt, decoration={width and color change,start color=gray, end color=gray}, decorate] (0.5,{.7pt})               arc [start angle={2}, end angle={179}, x radius={\xr*1cm}, y radius=1cm] 
+% arc [start angle=270, end angle=180, x radius=.5cm, y radius=1cm] 
+;
+
+\draw[xshift={\i*1cm},line width=.4pt, decoration={width and color change,start color=gray, end color=gray}, decorate] (0.5,{-.7pt})
+% arc [start angle={90}, end angle={180}, x radius=.5cm, y radius=1cm] 
+arc [start angle=358, end angle=181, x radius={\xr*1cm}, y radius=1cm] 
+;
+
+%arrows
+\draw[gray,xshift={\i*1cm},->,thin,>={Stealth[bend,inset=0pt,round,length=3.5mm, angle'=20]}] (0.25,{1cm-.5*\pgflinewidth})
+% arc [start angle={90}, end angle={180}, x radius=.5cm, y radius=1cm] 
+arc [start angle=90, end angle=150, x radius={\xr*1cm+.4\pgflinewidth}, y radius=1cm] 
+;
+
+
+}
+
+\end{scope}
+
+% %arrows
+% \draw[red,xshift={1cm},->] (0.25,{.7pt+1cm})
+% % arc [start angle={90}, end angle={180}, x radius=.5cm, y radius=1cm] 
+% arc [start angle=90, end angle=180, x radius={\xr*1cm}, y radius=1cm] 
+% ;
+
+
+%I
+\draw[->,red] ([shift={(0,.2)}]I) --++ (1,0) node[midway, above, black] {$I$}; 
+
+% \draw[red] (0,0) --++ (-1.5,0);
+% \draw[red] (6,0) --++ (-1.5,0);
+
+    
+    \end{tikzpicture}
+\caption{Линии магнитного поля прямого провода с током}
+\label{fig:p147}
+\end{figure}
+
+
+Линии поля прямого провода с током являются окружностями. Центры этих окружностей лежат на проводе, при этом окружности лежат в плоскостях, перпендикулярных проводу (см.~рис.\,\ref{fig:p147}).
+
+% Удобно использовать термин <<ближайшая сторона линии>>. Так, по ближайшим сторонам линий на рис.\,\ref{fig:p147}  
+
+Через любую точку пространства вне провода можно провести соответствующую линию (в форме окружности) его магнитного поля. С удалением от провода густота линий поля убывает (убывает индукция магнитного поля).
+
+Для определения направления линий магнитного поля прямого тока можно пользоваться следующим правилом.
+%
+\begin{law}
+    \textbf{Правило правой руки.} Если большой палец правой руки расположить так, чтобы он указывал направление тока в проводе, то остальные согнутые пальцы (охватывающие провод) укажут направление линий магнитного поля, создаваемого этим током.
+\end{law}
+%
+Рисунок~\ref{fig:p148} иллюстрирует применение этого правила.  
+
+    \begin{figure}[H]
+    \centering
+\begin{asy}
+settings.outformat="png";
+// settings.prc=true;
+settings.render=10;
+
+import three;
+import texcolors;
+import x11colors;
+import solids;
+size(10cm,0);
+currentprojection =
+orthographic((5,2,1.5));
+
+
+//styles
+///////////////////////////////////////////
+DefaultHead3.size=new real(pen p=currentpen) {return 3mm;};
+defaultpen(fontsize(11pt));
+defaultpen(linewidth(0.4pt));
+pen thick=black+2*linewidth(currentpen);
+/////////////////////////////////////////
+
+
+//draw(surface(path3D), lightgray+opacity(.5));
+//draw(path3D, Chocolate+thick,L=Label("$S$",EndPoint,N,black));
+
+//axes
+//draw(O--2.5X,L=Label("$x$",EndPoint,WSW));
+//draw(O--2.3Y,L=Label("$y$",EndPoint,ESE));
+//draw(O--3Z,L=Label("$\vec n$",EndPoint,W),Arrow3(angle=10));
+//draw(O--rotate(-30,X)*4Z,Green+thick,L=Label("$\vec B$",EndPoint,E,black),Arrow3(3.5mm,angle=10,emissive(Green)));
+
+//draw("$\alpha$",reverse(arc(O,0.8*Z,rotate(-30,X)*0.8*Z)),N+0.3E);
+
+
+//curr
+//cylinder1
+real a=4;
+triple pO=(0,-4,0);
+revolution cyl=cylinder(pO,.1,8,Y);
+draw(surface(cyl),orange);
+draw(shift(0,a,0)*rotate(-90,X)*scale3(.1)*unitdisk,orange);
+draw(shift(0,-a,0)*rotate(-90,X)*scale3(.1)*unitdisk,orange);
+path3 l=(.1,-a,0)--(.1,a,0);
+
+draw(4.5Y--6Y,red+thick,L=Label("$I$",MidPoint,N,black),Arrow3(3.5mm,angle=10,emissive(red)));
+
+
+////////////////////////////////////////
+//plates
+real a=2;
+path3 pl=((0,-a,-a)--(0,-a,a)--(0,a,a)--(0,a,-a)--cycle); 
+draw(shift(-1,0,0)*surface(pl), lightgray+opacity(1));
+draw(shift(-2,0,0)*surface(pl), lightgray+opacity(1));
+
+//cyl
+triple pO=(-1.5,2,-2);
+revolution cyl=cylinder(pO,.5,4,Z);
+draw(surface(cyl),lightgray);
+
+triple pO=(-1.5,-2,-2);
+revolution cyl=cylinder(pO,.5,4,Z);
+draw(surface(cyl),lightgray);
+
+triple pO=(-1.5,-2,2);
+revolution cyl=cylinder(pO,.5,4,Y);
+draw(surface(cyl),lightgray);
+
+triple pO=(-1.5,-2,-2);
+revolution cyl=cylinder(pO,.5,4,Y);
+draw(surface(cyl),lightgray);
+
+//sphere
+draw(shift(-1.5,2,-2)*scale3(.5)*unitsphere,lightgray);
+draw(shift(-1.5,2,2)*scale3(.5)*unitsphere,lightgray);
+draw(shift(-1.5,-2,-2)*scale3(.5)*unitsphere,lightgray);
+draw(shift(-1.5,-2,2)*scale3(.5)*unitsphere,lightgray);
+
+
+//fingers
+for (int n = 0; n <= 3; ++n) {
+
+triple f1=(-1.5,a,a);
+revolution cyl=cylinder(f1,.5,((5/8)*2a),Z);
+draw(rotate(-60,(-1.5,a,a),(-1.5,-a,a))*shift(0,(-1-.333)*n,0)*surface(cyl),lightgray);
+  
+triple f2=(shift((5/8)*2a*Sin(60),0,(5/8)*2a*Cos(60))*f1);
+revolution cyl=cylinder(f2,.5,((3/8)*2a),Z);
+draw(rotate(-60-70,f2,shift(0,-1,0)*f2)*shift(0,(-1-.333)*n,0)*surface(cyl),lightgray);
+draw(shift(f2)*shift(0,(-1-.333)*n,0)*scale3(.5)*unitsphere,lightgray);
+  
+//dot(shift((3/8)*2a*Sin(60+70),0,(3/8)*2a*Cos(60+70))*f2,red);
+triple f3=(shift((3/8)*2a*Sin(60+70),0,(3/8)*2a*Cos(60+70))*f2);
+revolution cyl=cylinder(f3,.5,((2/8)*2a),Z);
+draw(rotate(-60-70-50,f3,shift(0,-1,0)*f3)*shift(0,(-1-.333)*n,0)*surface(cyl),lightgray);
+draw(shift(f3)*shift(0,(-1-.333)*n,0)*scale3(.5)*unitsphere,lightgray);
+  
+triple f4=(shift((2/8)*2a*Sin(60+70+50),0,(2/8)*2a*Cos(60+70+50))*f3);
+draw(shift(f4)*shift(0,(-1-.333)*n,0)*scale3(.5)*unitsphere,lightgray);
+
+}
+
+
+//big fing
+triple pO=(-1.5,2,-2);
+revolution cyl=cylinder(pO,.5,2,Y);
+draw(rotate(-10,pO,shift(-1,0,0)*pO)*surface(cyl),lightgray);
+
+triple bf=(shift(0,(4/8)*2a*Cos(10),(4/8)*2a*Sin(10))*pO);
+revolution cyl=cylinder(bf,.5,((2.5/8)*2a),Y);
+draw(surface(cyl),lightgray);
+draw(shift(bf)*scale3(.5)*unitsphere,lightgray);
+draw(shift(0,(2.5/8)*2a,0)*shift(bf)*scale3(.5)*unitsphere,lightgray);
+
+
+
+
+\end{asy}
+\caption{Правило правой руки}
+\label{fig:p148}
+\end{figure}
+
+
+Сопоставляя рисунки~\ref{fig:p147} и~\ref{fig:p148}, можно видеть, что согнутые пальцы на рис.\,\ref{fig:p148} указывают направление линий магнитного поля вокруг провода.
+
+\medskip
+
+\noindent\textbf{Задача.} Два одинаковых изолированных тонких провода с противоположно направленными равными токами плотно вставлены в узкую пластиковую трубку. Что можно сказать о магнитном поле вокруг трубки? 
+
+\smallskip
+
+\noindent\emph{Решение.} 
+% Одинаковые токи характеризуются одинаковыми картинами линий магнитного поля. 
+С помощью правила правой руки можно убедиться, что поля токов компенсируют друг друга~--- магнитное поле вокруг трубки отсутствует.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{NoHyper}
+\end{document}
