@@ -289,8 +289,25 @@ node[midway,scale=1,color=gray,sloped,opacity=0.4] {\textnormal{Кравченк
 }
 
 
-\includepdf[pages=1,pagecommand={\addtocounter{section}{1}\phantomsection
-\addcontentsline{toc}{section}{\protect\numberline{\thesection}Векторы}}]{mech/1vec}
+%%%
+%%% subfile method
+%%%
+
+
+\subfile{mech/1vec}
+\subfile{mech/2num}
+
+
+
+
+
+%%%
+%%% pdf method
+%%%
+
+
+% \includepdf[pages=1,pagecommand={\addtocounter{section}{1}\phantomsection
+% \addcontentsline{toc}{section}{\protect\numberline{\thesection}Векторы}}]{mech/1vec}
 
 
 % \includepdf[pages=1,pagecommand={\addtocounter{section}{1}\phantomsection
