@@ -96,6 +96,10 @@
 \usepackage{pdfpages}
 \usetikzlibrary{circuits.ee.IEC}
 \usepackage{pgf-spectra}
+\usepackage{chngcntr} % Нужен, если используется старая версия LaTeX
+\counterwithout{section}{chapter}  % Секции идут по порядку (1, 2, 3...)
+\counterwithout{equation}{chapter} % Отвязываем формулы от глав класса book [1]
+\counterwithout{equation}{section} % Отвязываем формулы от секций (на всякий случай)
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -178,8 +182,6 @@
 \newsavebox{\myboxa}
 \newlength{\mylengtha}
 
-%equation numbers
-\renewcommand{\theequation}{\arabic{equation}}
 
 %an environment law
 \newenvironment{law}[1][\unskip]{%
