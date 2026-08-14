@@ -40,7 +40,7 @@
 \usetikzlibrary{shadings}
 \usetikzlibrary {shapes.symbols}
 \usetikzlibrary {decorations.pathmorphing,decorations.pathreplacing, decorations.shapes}
-\usepackage[labelsep=period,figurewithin=chapter,tablename=Табл.,tablewithin=chapter,justification=centering]{caption}[2018/05/01]
+\usepackage[labelsep=period,figurewithin=none,tablename=Табл.,tablewithin=none,justification=centering]{caption}[2018/05/01]
 \DeclareCaptionLabelFormat{sepnum}{#1\,#2} %разделитель между номером и рис. (табл.)
 \captionsetup{labelformat=sepnum}
 \usepackage{amssymb,amsmath}
@@ -100,7 +100,8 @@
 \counterwithout{section}{chapter}  % Секции идут по порядку (1, 2, 3...)
 \counterwithout{equation}{chapter} % Отвязываем формулы от глав класса book [1]
 \counterwithout{equation}{section} % Отвязываем формулы от секций (на всякий случай)
-
+\counterwithout{figure}{chapter}   % Отвязываем рисунки от глав (сквозной счет)
+\counterwithout{table}{chapter}    % Отвязываем таблицы от глав (сквозной счет)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %new commands and stuff
