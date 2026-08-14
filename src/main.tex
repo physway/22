@@ -269,6 +269,12 @@
 \tableofcontents
 
 
+%%%
+%%% subfile method
+%%%
+
+
+% mech
 \clearpage
 \pagestyle{myfancy}
 
@@ -289,11 +295,6 @@ node[midway,scale=1,color=gray,sloped,opacity=0.4] {\textnormal{Кравченк
 }
 
 
-%%%
-%%% subfile method
-%%%
-
-% mech
 \subfile{mech/1vec}
 \subfile{mech/2num}
 \subfile{mech/3mot}
@@ -307,7 +308,18 @@ node[midway,scale=1,color=gray,sloped,opacity=0.4] {\textnormal{Кравченк
 \subfile{mech/11circ}
 \subfile{mech/12trans}
 
+
+\clearpage
+\ClearShipoutPictureFG
 \chapter{Динамика}
+\clearpage
+\AddToShipoutPictureFG{%
+\begin{tikzpicture}[overlay,remember picture]
+\path (current page.south west) -- (current page.north east)
+node[midway,scale=1,color=gray,sloped,opacity=0.4] {\textnormal{Кравченко Игорь Игоревич\hspace{1cm} +79010144910\hspace{1cm} super.antig@yandex.ru}};
+\end{tikzpicture}
+}
+
 
 \subfile{mech/21sys}
 \subfile{mech/22IN}
@@ -319,7 +331,18 @@ node[midway,scale=1,color=gray,sloped,opacity=0.4] {\textnormal{Кравченк
 \subfile{mech/29fric}
 \subfile{mech/30press}
 
+
+\clearpage
+\ClearShipoutPictureFG
 \chapter{Статика}
+\clearpage
+\AddToShipoutPictureFG{%
+\begin{tikzpicture}[overlay,remember picture]
+\path (current page.south west) -- (current page.north east)
+node[midway,scale=1,color=gray,sloped,opacity=0.4] {\textnormal{Кравченко Игорь Игоревич\hspace{1cm} +79010144910\hspace{1cm} super.antig@yandex.ru}};
+\end{tikzpicture}
+}
+
 
 \subfile{mech/31torq}
 \subfile{mech/32equil}
@@ -330,33 +353,11 @@ node[midway,scale=1,color=gray,sloped,opacity=0.4] {\textnormal{Кравченк
 \subfile{mech/37Arch}
 \subfile{mech/37Arch}
 
+
+\clearpage
+\ClearShipoutPictureFG
 \chapter{Законы сохранения}
-
-\subfile{mech/41imp}
-\subfile{mech/43ECE}
-\subfile{mech/44ener}
-\subfile{mech/45COE}
-
-\chapter{Механические колебания и волны}
-
-\subfile{mech/51oscill}
-\subfile{mech/52pend}
-\subfile{mech/53wave}
-
-
 \clearpage
-\pagestyle{myfancy}
-
-
-\part{Молекулярная физика.
-Термодинамика}
-
-
-\chapter{Молекулярная физика}
-
-
-\clearpage
-
 \AddToShipoutPictureFG{%
 \begin{tikzpicture}[overlay,remember picture]
 \path (current page.south west) -- (current page.north east)
@@ -365,7 +366,43 @@ node[midway,scale=1,color=gray,sloped,opacity=0.4] {\textnormal{Кравченк
 }
 
 
+\subfile{mech/41imp}
+\subfile{mech/43ECE}
+\subfile{mech/44ener}
+\subfile{mech/45COE}
+
+
+\clearpage
+\ClearShipoutPictureFG
+\chapter{Механические колебания и волны}
+\clearpage
+\AddToShipoutPictureFG{%
+\begin{tikzpicture}[overlay,remember picture]
+\path (current page.south west) -- (current page.north east)
+node[midway,scale=1,color=gray,sloped,opacity=0.4] {\textnormal{Кравченко Игорь Игоревич\hspace{1cm} +79010144910\hspace{1cm} super.antig@yandex.ru}};
+\end{tikzpicture}
+}
+
+
+\subfile{mech/51oscill}
+\subfile{mech/52pend}
+\subfile{mech/53wave}
+
+
 %mol
+\clearpage
+\ClearShipoutPictureFG
+\part{Молекулярная физика. Термодинамика}
+\chapter{Молекулярная физика}
+\clearpage
+\AddToShipoutPictureFG{%
+\begin{tikzpicture}[overlay,remember picture]
+\path (current page.south west) -- (current page.north east)
+node[midway,scale=1,color=gray,sloped,opacity=0.4] {\textnormal{Кравченко Игорь Игоревич\hspace{1cm} +79010144910\hspace{1cm} super.antig@yandex.ru}};
+\end{tikzpicture}
+}
+
+
 \subfile{mol/1mmain}
 \subfile{mol/2diff}
 \subfile{mol/3mainf}
@@ -375,7 +412,18 @@ node[midway,scale=1,color=gray,sloped,opacity=0.4] {\textnormal{Кравченк
 \subfile{mol/7vap}
 \subfile{mol/8hum}
 
+
+\clearpage
+\ClearShipoutPictureFG
 \chapter{Термодинамика}
+\clearpage
+\AddToShipoutPictureFG{%
+\begin{tikzpicture}[overlay,remember picture]
+\path (current page.south west) -- (current page.north east)
+node[midway,scale=1,color=gray,sloped,opacity=0.4] {\textnormal{Кравченко Игорь Игоревич\hspace{1cm} +79010144910\hspace{1cm} super.antig@yandex.ru}};
+\end{tikzpicture}
+}
+
 
 \subfile{mol/21U}
 \subfile{mol/22htrans}
@@ -387,18 +435,12 @@ node[midway,scale=1,color=gray,sloped,opacity=0.4] {\textnormal{Кравченк
 \subfile{mol/28heng}
 
 
+%el
 \clearpage
-\pagestyle{myfancy}
-
-
+\ClearShipoutPictureFG
 \part{Электродинамика}
-
-
 \chapter{Электростатика}
-
-
 \clearpage
-
 \AddToShipoutPictureFG{%
 \begin{tikzpicture}[overlay,remember picture]
 \path (current page.south west) -- (current page.north east)
@@ -407,7 +449,6 @@ node[midway,scale=1,color=gray,sloped,opacity=0.4] {\textnormal{Кравченк
 }
 
 
-%el
 \subfile{el/1epart}
 \subfile{el/2charge}
 \subfile{el/3electriz}
@@ -425,7 +466,18 @@ node[midway,scale=1,color=gray,sloped,opacity=0.4] {\textnormal{Кравченк
 \subfile{el/15cap}
 \subfile{el/16caps}
 
+
+\clearpage
+\ClearShipoutPictureFG
 \chapter{Постоянный ток}
+\clearpage
+\AddToShipoutPictureFG{%
+\begin{tikzpicture}[overlay,remember picture]
+\path (current page.south west) -- (current page.north east)
+node[midway,scale=1,color=gray,sloped,opacity=0.4] {\textnormal{Кравченко Игорь Игоревич\hspace{1cm} +79010144910\hspace{1cm} super.antig@yandex.ru}};
+\end{tikzpicture}
+}
+
 
 \subfile{el/21I}
 \subfile{el/22R}
@@ -438,7 +490,18 @@ node[midway,scale=1,color=gray,sloped,opacity=0.4] {\textnormal{Кравченк
 \subfile{el/28semi2}
 \subfile{el/29pn}
 
+
+\clearpage
+\ClearShipoutPictureFG
 \chapter{Магнитное поле}
+\clearpage
+\AddToShipoutPictureFG{%
+\begin{tikzpicture}[overlay,remember picture]
+\path (current page.south west) -- (current page.north east)
+node[midway,scale=1,color=gray,sloped,opacity=0.4] {\textnormal{Кравченко Игорь Игоревич\hspace{1cm} +79010144910\hspace{1cm} super.antig@yandex.ru}};
+\end{tikzpicture}
+}
+
 
 \subfile{el/31magn}
 \subfile{el/32magnne}
@@ -451,35 +514,11 @@ node[midway,scale=1,color=gray,sloped,opacity=0.4] {\textnormal{Кравченк
 \subfile{el/39aFA}
 \subfile{el/39bFL}
 
+
+\clearpage
+\ClearShipoutPictureFG
 \chapter{Электромагнитная индукция}
-
-\subfile{el/41mflux}
-\subfile{el/42Flaw}
-\subfile{el/43mcond}
-\subfile{el/44Lenz}
-\subfile{el/45si}
-
-\chapter{Электромагнитные колебания и волны}
-
-\subfile{el/51emos}
-\subfile{el/52LC}
-\subfile{el/53dros}
-\subfile{el/54EE}
-\subfile{el/55ewave}
-
-
 \clearpage
-\pagestyle{myfancy}
-
-
-\part{Оптика}
-
-
-\chapter{Геометрическая оптика}
-
-
-\clearpage
-
 \AddToShipoutPictureFG{%
 \begin{tikzpicture}[overlay,remember picture]
 \path (current page.south west) -- (current page.north east)
@@ -488,7 +527,45 @@ node[midway,scale=1,color=gray,sloped,opacity=0.4] {\textnormal{Кравченк
 }
 
 
+\subfile{el/41mflux}
+\subfile{el/42Flaw}
+\subfile{el/43mcond}
+\subfile{el/44Lenz}
+\subfile{el/45si}
+
+
+\clearpage
+\ClearShipoutPictureFG
+\chapter{Электромагнитные колебания и волны}
+\clearpage
+\AddToShipoutPictureFG{%
+\begin{tikzpicture}[overlay,remember picture]
+\path (current page.south west) -- (current page.north east)
+node[midway,scale=1,color=gray,sloped,opacity=0.4] {\textnormal{Кравченко Игорь Игоревич\hspace{1cm} +79010144910\hspace{1cm} super.antig@yandex.ru}};
+\end{tikzpicture}
+}
+
+
+\subfile{el/51emos}
+\subfile{el/52LC}
+\subfile{el/53dros}
+\subfile{el/54EE}
+\subfile{el/55ewave}
+
+
 %op
+\clearpage
+\ClearShipoutPictureFG
+\part{Оптика}
+\chapter{Геометрическая оптика}
+\clearpage
+\AddToShipoutPictureFG{%
+\begin{tikzpicture}[overlay,remember picture]
+\path (current page.south west) -- (current page.north east)
+node[midway,scale=1,color=gray,sloped,opacity=0.4] {\textnormal{Кравченко Игорь Игоревич\hspace{1cm} +79010144910\hspace{1cm} super.antig@yandex.ru}};
+\end{tikzpicture}
+}
+
 \subfile{op/1light}
 \subfile{op/2refl}
 \subfile{op/3refr}
@@ -498,31 +575,11 @@ node[midway,scale=1,color=gray,sloped,opacity=0.4] {\textnormal{Кравченк
 \subfile{op/7image}
 \subfile{op/8eye}
 
+
+\clearpage
+\ClearShipoutPictureFG
 \chapter{Волновая оптика}
-
-\subfile{op/21lprinc}
-\subfile{op/22linter}
-\subfile{op/23diffr}
-\subfile{op/24disp}
-
-\chapter{Основы специальной теории относительности (СТО)}
-
-\subfile{sr/1sprinc}
-\subfile{sr/2smain}
-
-
 \clearpage
-\pagestyle{myfancy}
-
-
-\part{Квантовая физика}
-
-
-\chapter{Фотоны}
-
-
-\clearpage
-
 \AddToShipoutPictureFG{%
 \begin{tikzpicture}[overlay,remember picture]
 \path (current page.south west) -- (current page.north east)
@@ -531,7 +588,42 @@ node[midway,scale=1,color=gray,sloped,opacity=0.4] {\textnormal{Кравченк
 }
 
 
+\subfile{op/21lprinc}
+\subfile{op/22linter}
+\subfile{op/23diffr}
+\subfile{op/24disp}
+
+
+\clearpage
+\ClearShipoutPictureFG
+\chapter{Основы специальной теории относительности (СТО)}
+\clearpage
+\AddToShipoutPictureFG{%
+\begin{tikzpicture}[overlay,remember picture]
+\path (current page.south west) -- (current page.north east)
+node[midway,scale=1,color=gray,sloped,opacity=0.4] {\textnormal{Кравченко Игорь Игоревич\hspace{1cm} +79010144910\hspace{1cm} super.antig@yandex.ru}};
+\end{tikzpicture}
+}
+
+
+\subfile{sr/1sprinc}
+\subfile{sr/2smain}
+
+
 %qu
+\clearpage
+\ClearShipoutPictureFG
+\part{Квантовая физика}
+\chapter{Фотоны}
+\clearpage
+\AddToShipoutPictureFG{%
+\begin{tikzpicture}[overlay,remember picture]
+\path (current page.south west) -- (current page.north east)
+node[midway,scale=1,color=gray,sloped,opacity=0.4] {\textnormal{Кравченко Игорь Игоревич\hspace{1cm} +79010144910\hspace{1cm} super.antig@yandex.ru}};
+\end{tikzpicture}
+}
+
+
 \subfile{qu/1photo}
 \subfile{qu/2pheq}
 \subfile{qu/3lpress}
@@ -541,18 +633,12 @@ node[midway,scale=1,color=gray,sloped,opacity=0.4] {\textnormal{Кравченк
 \subfile{qu/7rad}
 
 
+%za
 \clearpage
-\pagestyle{myfancy}
-
-
+\ClearShipoutPictureFG
 \part{Приложение}
-
-
 \chapter{Как решать задачи по физике}
-
-
 \clearpage
-
 \AddToShipoutPictureFG{%
 \begin{tikzpicture}[overlay,remember picture]
 \path (current page.south west) -- (current page.north east)
@@ -561,7 +647,6 @@ node[midway,scale=1,color=gray,sloped,opacity=0.4] {\textnormal{Кравченк
 }
 
 
-%za
 \subfile{za/find}
 \subfile{za/mnote}
 
