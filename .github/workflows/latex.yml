@@ -21,31 +21,37 @@ jobs:
 
       - name: Compile Document and 3D Render
         run: |
+          # 1. Извлекаем имя репозитория (папки проекта) из переменной GitHub
+          REPO_NAME=$(basename "${{ github.repository }}")
+          echo "Имя проекта для PDF: $REPO_NAME"
+          
           # Заходим в вашу обычную папку src
           cd src
           
-          # 1. Первый проход LaTeX для создания вспомогательных файлов
-          pdflatex -interaction=nonstopmode -shell-escape -jobname=diploma_final main.tex || true
+          # 2. Первый проход LaTeX с динамическим именем jobname
+          pdflatex -interaction=nonstopmode -shell-escape -jobname="$REPO_NAME" main.tex || true
           
-          # 2. Рендеринг сложной 3D графики Asymptote через виртуальный дисплей (xvfb-run)
-          # Флаг -f pdf принудительно собирает графику в качественном векторном PDF формате
+          # 3. Рендеринг сложной 3D графики Asymptote через виртуальный дисплей (xvfb-run)
           xvfb-run -a asy -f pdf *.asy || echo "No .asy files to compile"
           
-          # 3. Сборка библиографии
-          biber diploma_final || echo "No bibliography to compile"
+          # 4. Сборка библиографии по имени проекта
+          biber "$REPO_NAME" || echo "No bibliography to compile"
           
-          # 4. Финальные проходы LaTeX для правильной верстки и вставки 3D рисунков
-          pdflatex -interaction=nonstopmode -shell-escape -jobname=diploma_final main.tex || true
-          pdflatex -interaction=nonstopmode -shell-escape -jobname=diploma_final main.tex || true
+          # 5. Финальные проходы LaTeX для правильной верстки
+          pdflatex -interaction=nonstopmode -shell-escape -jobname="$REPO_NAME" main.tex || true
+          pdflatex -interaction=nonstopmode -shell-escape -jobname="$REPO_NAME" main.tex || true
 
       - name: Commit and Push PDF and Graphics
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@://github.com"
           
-          # Добавляем скомпилированный PDF и сгенерированные 3D-рисунки из папки src
-          git add src/diploma_final.pdf
+          # Снова получаем имя проекта для этапа сохранения в Git
+          REPO_NAME=$(basename "${{ github.repository }}")
+          
+          # Добавляем скомпилированный PDF с именем папки и сгенерированные 3D-рисунки
+          git add "src/${REPO_NAME}.pdf"
           git add src/*.pdf || echo "No generated vector graphics to add"
           
-          git commit -m "Automated PDF and 3D Asymptote generation" || echo "No changes to commit"
+          git commit -m "Automated PDF ($REPO_NAME) and 3D Asymptote generation" || echo "No changes to commit"
           git push
