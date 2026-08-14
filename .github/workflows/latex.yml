@@ -3,9 +3,7 @@ name: Compile LaTeX with Complex 3D Asymptote
 on: [push]
 
 permissions:
-  contents: write
-  pages: write      # Разрешение на публикацию GitHub Pages
-  id-token: write   # Необходимый токен безопасности для деплоя
+  contents: write # Оставляем только права на запись в репозиторий
 
 jobs:
   build:
@@ -22,14 +20,8 @@ jobs:
 
       - name: Compile All Documents and 3D Render
         run: |
-          # 1. Находим все файлы main.tex во всех папках репозитория
-          # И запускаем цикл по каждому найденному файлу
           find . -name "main.tex" | while read -r MAIN_FILE_PATH; do
-            
-            # Получаем путь к текущей папке (например, ./src или ./chapter1)
             DIR_PATH=$(dirname "$MAIN_FILE_PATH")
-            
-            # Извлекаем имя этой папки (например, src или chapter1)
             PDF_NAME=$(basename "$DIR_PATH")
             
             echo "--------------------------------------------------"
@@ -37,26 +29,15 @@ jobs:
             echo "Файл PDF будет сохранен как: $DIR_PATH/$PDF_NAME.pdf"
             echo "--------------------------------------------------"
             
-            # Сохраняем текущую папку, чтобы вернуться назад после компиляции
             ROOT_DIR=$(pwd)
-            
-            # Переходим в папку с текущим документом
             cd "$DIR_PATH"
             
-            # 2. Первый проход LaTeX
             pdflatex -interaction=nonstopmode -shell-escape -jobname="$PDF_NAME" main.tex || true
-            
-            # 3. Рендеринг сложной 3D графики Asymptote для этой папки
             xvfb-run -a asy -f pdf *.asy || echo "No .asy files to compile in $DIR_PATH"
-            
-            # 4. Сборка библиографии для текущего PDF
             biber "$PDF_NAME" || echo "No bibliography to compile in $DIR_PATH"
-            
-            # 5. Финальные проходы LaTeX для правильной верстки
             pdflatex -interaction=nonstopmode -shell-escape -jobname="$PDF_NAME" main.tex || true
             pdflatex -interaction=nonstopmode -shell-escape -jobname="$PDF_NAME" main.tex || true
             
-            # Возвращаемся в корень репозитория для перехода к следующей папке
             cd "$ROOT_DIR"
           done
 
@@ -65,23 +46,7 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@://github.com"
           
-          # Находим все созданные PDF-файлы и добавляем их в Git
-          # Конструкция find + git add позволяет безопасно добавить файлы из всех подпапок
           find . -name "*.pdf" -exec git add {} +
           
           git commit -m "Automated PDF generation for all project folders" || echo "No changes to commit"
           git push
-
-      # === АВТОМАТИЧЕСКОЕ ОБНОВЛЕНИЕ САЙТА GITHUB PAGES ===
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: '.'
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
