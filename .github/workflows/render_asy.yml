@@ -20,10 +20,10 @@ jobs:
       - name: Render 3D with Alpha Channel
         run: |
           # Запуск через xvfb-run имитирует наличие монитора и видеокарты
-          xvfb-run -a asy -f png -render=8 -multisample=4 имя_файла.asy
+          xvfb-run -a asy -f png -render=8 -multisample=4 1.asy
 
       - name: Upload Finished Transparent PNG
         uses: actions/artifacts@v4
         with:
           name: transparent-3d-model
-          path: имя_файла.png
+          path: 1.png
