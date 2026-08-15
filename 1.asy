@@ -5,7 +5,7 @@
 import settings;
 settings.render = 8;
 settings.multisample = 4;
-settings.background = new pen(rgba(0,0,0,0)); // На Ubuntu под xvfb это сработает!
+settings.background = invisible; // Исправлено здесь
 
 
 
