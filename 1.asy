@@ -3,10 +3,9 @@
 //settings.render=11;
 
 import settings;
-settings.background = white;  // Делаем фон идеально белым для контраста
-
-// Передаем серверу Overleaf команду сделать белый цвет прозрачным через ImageMagick:
-settings.convert = "convert -transparent white";
+settings.render = 8;
+settings.multisample = 4;
+settings.background = new pen(rgba(0,0,0,0)); // На Ubuntu под xvfb это сработает!
 
 
 
