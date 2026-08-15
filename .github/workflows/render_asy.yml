@@ -1,5 +1,5 @@
 name: Render Asymptote 3D
-on: [push, workflow_dispatch] # Запускается при пуше и вручную кнопкой
+on: [push, workflow_dispatch]
 
 jobs:
   render:
@@ -19,8 +19,11 @@ jobs:
 
       - name: Render 3D with Alpha Channel
         run: |
-          # xvfb-run создает виртуальный экран для работы 3D-движка OpenGL
+          # 1. Рендерим 3D-сцену на стандартном белом фоне в ультра-качестве
           xvfb-run -a asy -f png -render=8 -multisample=4 1.asy
+          
+          # 2. Утилита ImageMagick берет файл 1.png, стирает белый цвет и перезаписывает его
+          convert 1.png -transparent white 1.png
 
       - name: Upload Finished Transparent PNG
         uses: actions/upload-artifact@v4
