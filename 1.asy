@@ -5,7 +5,7 @@
 import settings;
 settings.render = 8;
 settings.multisample = 4;
-settings.background = invisible; // Исправлено здесь
+
 
 
 
