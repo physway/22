@@ -1,5 +1,5 @@
 name: Render Asymptote 3D
-on: [push, workflow_dispatch] # Запуск при пуше или вручную
+on: [push, workflow_dispatch] # Запускается при пуше и вручную кнопкой
 
 jobs:
   render:
@@ -19,11 +19,11 @@ jobs:
 
       - name: Render 3D with Alpha Channel
         run: |
-          # Запуск через xvfb-run имитирует наличие монитора и видеокарты
+          # xvfb-run создает виртуальный экран для работы 3D-движка OpenGL
           xvfb-run -a asy -f png -render=8 -multisample=4 1.asy
 
       - name: Upload Finished Transparent PNG
-        uses: actions/artifacts@v4
+        uses: actions/upload-artifact@v4
         with:
           name: transparent-3d-model
           path: 1.png
