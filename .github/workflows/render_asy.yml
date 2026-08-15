@@ -1,0 +1,29 @@
+name: Render Asymptote 3D
+on: [push, workflow_dispatch] # Запуск при пуше или вручную
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Asymptote and Tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y asymptote imagemagick xvfb libgl1-mesa-dri
+
+      - name: Fix ImageMagick Policy (Allow PDF/PNG conversions)
+        run: |
+          sudo sed -i 's/domain="coder" rights="none" pattern="PDF"/domain="coder" rights="read|write" pattern="PDF"/' /etc/ImageMagick-6/policy.xml
+
+      - name: Render 3D with Alpha Channel
+        run: |
+          # Запуск через xvfb-run имитирует наличие монитора и видеокарты
+          xvfb-run -a asy -f png -render=8 -multisample=4 имя_файла.asy
+
+      - name: Upload Finished Transparent PNG
+        uses: actions/artifacts@v4
+        with:
+          name: transparent-3d-model
+          path: имя_файла.png
