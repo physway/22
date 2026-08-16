@@ -6,6 +6,7 @@ on:
     paths-ignore:
       - 'output/**'
       - '*.pdf'
+      - '*.png'
 
 permissions:
   contents: write
@@ -29,21 +30,27 @@ jobs:
         run: |
           mkdir -p output
 
-          # 1. Сборка vector_globe.tex с фиксом чёрного фона на сервере
+          # 1. Сборка vector_globe.tex через прозрачный растровый буфер высокого качества
           if [ -f "vector_globe.tex" ]; then
             echo "Компиляция файла vector_globe.tex..."
             pdflatex -interaction=nonstopmode -shell-escape vector_globe.tex || true
             
-            # Флаги -nobs и -bg 0 принудительно очищают буфер виртуального дисплея от черного цвета
-            xvfb-run -a asy -f pdf -nobs -bg 0 vector_globe-*.asy || echo "Ошибка при рендере asy"
+            # Генерируем PNG высокого разрешения с альфа-каналом
+            xvfb-run -a asy vector_globe-*.asy || echo "Ошибка при рендере asy"
             
+            # Переименовываем сгенерированный PNG, чтобы LaTeX гарантированно вставил картинку, а не пустой код
+            if [ -f "vector_globe-1.png" ]; then
+              mv vector_globe-1.png vector_globe-1.pdf.png 2>/dev/null || true
+            fi
+            
+            # Финальный проход LaTeX: упаковываем прозрачный PNG внутрь PDF
             pdflatex -interaction=nonstopmode -shell-escape vector_globe.tex || true
             
             cp vector_globe.pdf output/vector_globe.pdf
-            rm -f vector_globe.pdf vector_globe-*.pdf vector_globe-*.tex
+            rm -f vector_globe.pdf vector_globe-*.pdf vector_globe-*.png vector_globe-*.tex
           fi
 
-          # 2. Обход всех остальных проектов main.tex в подпапках (ваш изначальный код)
+          # 2. Обход всех остальных проектов main.tex во вложенных папках
           find . -name "main.tex" | while read -r MAIN_FILE_PATH; do
             DIR_PATH=$(dirname "$MAIN_FILE_PATH")
             PDF_NAME=$(basename "$DIR_PATH")
@@ -72,14 +79,11 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@://github.com"
           
-          # Очищаем корень от случайных временных PDF перед пушем
-          rm -f *.pdf
+          rm -f *.pdf *.png
           
-          # Индексируем только итоговую папку output и вложенные папки проектов
           if [ -d "output" ]; then git add output/; fi
           find src/ -name "*.pdf" -exec git add {} + 2>/dev/null || true
           
-          # Пушим изменения. В случае конфликта бинарных PDF принудительно берем свежеотрендеренную версию (-Xtheirs)
           if ! git diff --quiet || ! git diff --staged --quiet; then
             git commit -m "Automated PDF generation [skip ci]"
             git pull --rebase -Xtheirs --autostash origin main
