@@ -2,14 +2,18 @@
 \usepackage[inline]{asymptote}
 \usepackage[utf8]{inputenc}
 \usepackage[T1,T2A]{fontenc}
-\usepackage[]{graphicx}
+\usepackage{graphicx}
 \usepackage[russian]{babel}
 
 \begin{document}
 \begin{asy}
-    settings.render = 4; // Сглаживание деталей
+    // Настраиваем вывод в прозрачный PNG высокого разрешения
+    settings.outformat = "png"; 
+    settings.render = 8;        // Максимальное сглаживание и качество БЕЗ артефактов
     settings.prc = false;
-    settings.outformat = "pdf"; 
+    
+    // Включаем честную альфа-прозрачность для 3D-сцены в OpenGL
+    currentlight.background = opacity(0.0); 
 
     import three;
     import texcolors;
@@ -19,10 +23,9 @@
     size(3cm,0);
     currentprojection = orthographic((5,2,2));
 
-    // ГАРАНТИРОВАННАЯ ПРОЗРАЧНОСТЬ ДЛЯ СЕРВЕРНОГО OPENGL
-    currentlight.background = opacity(0.0) + white;
+    currentlight = light(gray(0.6), specular=gray(0.2), (5,5,10));
 
-    //styles
+    // Styles
     DefaultHead3.size = new real(pen p=currentpen) {return 3mm;};
     defaultpen(fontsize(11pt));
     defaultpen(linewidth(0.4pt));
