@@ -2,14 +2,14 @@
 \usepackage[inline]{asymptote}
 \usepackage[utf8]{inputenc}
 \usepackage[T1,T2A]{fontenc}
-\usepackage{graphicx}
+\usepackage[]{graphicx}
 \usepackage[russian]{babel}
 
 \begin{document}
 \begin{asy}
-    settings.render = 0; // Чистый векторный 3D-просчет (дает 100% прозрачность фона на сервере)
+    settings.render = 4; // Включаем обратно красивое аппаратное 3D-сглаживание деталей
     settings.prc = false;
-    settings.outformat = "pdf"; 
+    settings.outformat = "png"; // Генерируем PNG высокого разрешения для обработки
 
     import three;
     import texcolors;
@@ -19,42 +19,42 @@
     size(3cm,0);
     currentprojection = orthographic((5,2,2));
 
-    // Настройка стилей линий
-    DefaultHead3.size = new real(pen p=currentpen) {return 3mm;};
+    // Настраиваем фиксированный фон для последующего удаления
+    currentlight.background = white; 
+    currentlight = light(gray(0.6), specular=gray(0.2), (5,5,10));
+
+    //styles
+    DefaultHead3.size=new real(pen p=currentpen) {return 3mm;};
     defaultpen(fontsize(11pt));
     defaultpen(linewidth(0.4pt));
-    pen thick = black + 2*linewidth(currentpen);
-
-    // Цвет заливки поверхностей: используем nolight, чтобы убрать черные пятна и артефакты
-    pen surface_pen = lightgray;
+    pen thick=black+2*linewidth(currentpen);
 
     path path2D = (2.5, 0) .. (2, 1) .. (0, 2) .. (-2.25, 1) .. (-1.5, 0) .. (-1, -1) .. (0, -1.75) .. (1, -2) .. cycle;
     path3 path3D = path3(path2D, XYplane);
 
     // External ball
-    triple pA = (rotate(-20,X)*Z);
-    path3 circ = (reverse(arc(O,pA,-Z)));
+    triple pA=(rotate(-20,X)*Z);
+    path3 circ=(reverse(arc(O,pA,-Z)));
     for (int n = 0; n <= 11; ++n) {
-        revolution sur = revolution(O,circ,Z,30*n,30*(n+1));
-        // nolight отключает 3D-тени, убирая "грязные" линии и артефакты на стыках векторов
-        draw(surface(sur), surface_pen, nolight);
+        revolution sur=revolution(O,circ,Z,30*n,30*(n+1));
+        draw(surface(sur), lightgray);
     }
 
     // Internal ball
-    triple pA = (rotate(-20,X)*0.9Z);
-    path3 circ = (reverse(arc(O,pA,-Z)));
+    triple pA=(rotate(-20,X)*0.9Z);
+    path3 circ=(reverse(arc(O,pA,-Z)));
     for (int n = 0; n <= 11; ++n) {
-        revolution sur = revolution(O,circ,Z,30*n,30*(n+1));
-        draw(surface(sur), surface_pen, nolight);
+        revolution sur=revolution(O,circ,Z,30*n,30*(n+1));
+        draw(surface(sur), lightgray);
     }
 
     // Between walls
-    triple pA = (rotate(-20,X)*Z);
-    triple pB = (rotate(-20,X)*.9Z);
-    path3 bet = pA--pB;
+    triple pA=(rotate(-20,X)*Z);
+    triple pB=(rotate(-20,X)*.9Z);
+    path3 bet=pA--pB;
     for (int n = 0; n <= 11; ++n) {
-        revolution sur = revolution(O,bet,Z,30*n,30*(n+1));
-        draw(surface(sur), surface_pen, nolight);
+        revolution sur=revolution(O,bet,Z,30*n,30*(n+1));
+        draw(surface(sur), lightgray);
     }
 \end{asy}
 \end{document}
