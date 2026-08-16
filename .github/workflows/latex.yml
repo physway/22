@@ -3,9 +3,9 @@ name: Compile LaTeX with Complex 3D Asymptote
 on:
   push:
     branches: [ "main" ]
-    # Игнорируем запуск, если изменения произошли ТОЛЬКО в папке output
     paths-ignore:
       - 'output/**'
+      - '*.pdf' # Игнорируем запуск, если пушатся сами PDF-файлы
 
 permissions:
   contents: write
@@ -18,7 +18,7 @@ jobs:
       - name: Set up Git Repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Скачиваем всю историю, чтобы избежать конфликтов при пуше
+          fetch-depth: 0 
 
       - name: Install LaTeX, Asymptote, Inkscape and Xvfb 3D Drivers
         run: |
@@ -27,23 +27,26 @@ jobs:
 
       - name: Compile All Documents and 3D Render
         run: |
-          # 1. Сначала компилируем ваш отдельный файл vector_globe.tex с прозрачностью (если он существует)
+          # Создаем папку для результатов заранее
+          mkdir -p output
+
+          # 1. Компилируем ваш отдельный файл vector_globe.tex с прозрачностью (если он в корне)
           if [ -f "vector_globe.tex" ]; then
             echo "Компиляция vector_globe.tex со встроенной прозрачностью..."
             pdflatex -interaction=nonstopmode -shell-escape vector_globe.tex || true
             xvfb-run -a asy -f pdf vector_globe-*.asy || echo "Нет asy файлов для vector_globe"
             pdflatex -interaction=nonstopmode -shell-escape vector_globe.tex || true
             
-            mkdir -p output
+            # Переносим результат в output, а из корня удаляем, чтобы не засорять репозиторий
             cp vector_globe.pdf output/vector_globe.pdf
+            rm -f vector_globe.pdf vector_globe-*.pdf vector_globe-*.tex
           fi
 
-          # 2. Затем выполняем ваш стандартный обход всех папок с main.tex
+          # 2. Выполняем ваш стандартный обход всех папок с main.tex в /src
           find . -name "main.tex" | while read -r MAIN_FILE_PATH; do
             DIR_PATH=$(dirname "$MAIN_FILE_PATH")
             PDF_NAME=$(basename "$DIR_PATH")
             
-            # Пропускаем служебные папки (например, если main.tex случайно попал в кэш)
             if [[ "$DIR_PATH" == *"output"* ]]; then continue; fi
             
             echo "--------------------------------------------------"
@@ -68,14 +71,17 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           
-          # Добавляем все сгенерированные PDF, включая папку output
-          find . -name "*.pdf" -exec git add {} +
-          if [ -d "output" ]; then git add output/; fi
+          # Очищаем корень от случайных временных PDF перед коммитом
+          rm -f *.pdf
           
-          # Безопасный пуш с подтяжкой изменений, предотвращающий бесконечный цикл [skip ci]
+          # Индексируем только целевую папку output и вложенные папки /src
+          if [ -d "output" ]; then git add output/; fi
+          find src/ -name "*.pdf" -exec git add {} + 2>/dev/null || true
+          
+          # Пушим изменения. В случае конфликта бинарных PDF принудительно берем свежеотрендеренную версию (-Xtheirs)
           if ! git diff --quiet || ! git diff --staged --quiet; then
             git commit -m "Automated PDF generation [skip ci]"
-            git pull --rebase --autostash origin main
+            git pull --rebase -Xtheirs --autostash origin main
             git push origin main
           else
             echo "No changes to commit"
