@@ -28,8 +28,13 @@ jobs:
       - name: Install LaTeX, Asymptote, ImageMagick and 3D Drivers
         run: |
           sudo apt-get update
-          # Устанавливаем imagemagick для постобработки прозрачности
           sudo apt-get install -y texlive-latex-base texlive-latex-extra texlive-science texlive-lang-cyrillic cm-super asymptote texlive-bibtex-extra biber inkscape xvfb libgl1-mesa-dri ghostscript imagemagick
+
+      - name: Change ImageMagick policy to allow PDF manipulation
+        run: |
+          # СНИМАЕМ БЛОКИРОВКУ БЕЗОПАСНОСТИ LINUX: разрешаем ImageMagick читать и писать PDF
+          sudo sed -i 's/rights="none" pattern="PDF"/rights="read|write" pattern="PDF"/' /etc/ImageMagick-6/policy.xml || true
+          sudo sed -i 's/rights="none" pattern="PDF"/rights="read|write" pattern="PDF"/' /etc/ImageMagick-7/policy.xml || true
 
       - name: Compile All Documents and 3D Render
         run: |
@@ -45,7 +50,7 @@ jobs:
             
             echo "Шаг 3: Удаление белого фона через ImageMagick и конвертация в PDF..."
             if [ -f "vector_globe-1.png" ]; then
-              # -fuzz 5% аккуратно сглаживает пиксели по краям шара, чтобы не было белой обводки
+              # Разблокированный convert теперь успешно создаст прозрачный PDF из PNG
               convert vector_globe-1.png -fuzz 5% -transparent white transparent_globe.pdf
             else
               echo "Критическая ошибка: файл vector_globe-1.png не был найден движком Asymptote!"
@@ -60,7 +65,7 @@ jobs:
             rm -f vector_globe.pdf vector_globe-*.pdf vector_globe-*.png vector_globe-*.tex transparent_globe.pdf
           fi
 
-          # 2. Стандартный обход остальных проектов main.tex в ваших подпапках
+          # 2. Обход всех остальных проектов main.tex в ваших подпапках
           find . -name "main.tex" | while read -r MAIN_FILE_PATH; do
             DIR_PATH=$(dirname "$MAIN_FILE_PATH")
             PDF_NAME=$(basename "$DIR_PATH")
