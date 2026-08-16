@@ -20,16 +20,16 @@ jobs:
 
       - name: Compile Document
         run: |
-          # 1. Первый проход для генерации временных .asy файлов
+          # 1. Первый проход для генерации временных .asy файлов графики
           pdflatex -shell-escape vector_globe.tex
           
-          # 2. Компиляция графики Asymptote с прозрачным фоном
+          # 2. Компиляция графики Asymptote (прозрачность берется из настроек кода)
           for f in *.asy; do
             [ -e "$f" ] || continue
-            asy -f pdf -bg 0 "$f"
+            asy -f pdf "$f"
           done
           
-          # 3. Финальная сборка документа
+          # 3. Финальная сборка документа с внедрением графики
           pdflatex -shell-escape vector_globe.tex
 
       - name: Commit and Push compiled PDF
@@ -38,7 +38,7 @@ jobs:
           cp vector_globe.pdf output/vector_globe.pdf
           
           git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@://github.com"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
           git add output/vector_globe.pdf
           git diff --quiet && git diff --staged --quiet || (git commit -m "Update transparent vector_globe.pdf [skip ci]" && git push)
