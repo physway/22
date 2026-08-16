@@ -6,8 +6,8 @@ on:
     paths-ignore:
       - 'output/**'
       - '*.pdf'
+      - '*.png'
 
-# ЗАЩИТА ОТ БЛОКИРОВОК: Разрешаем выполнять только ОДНУ сборку одновременно
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -25,27 +25,42 @@ jobs:
         with:
           fetch-depth: 0 
 
-      - name: Install LaTeX, Asymptote, Inkscape and Xvfb 3D Drivers
+      - name: Install LaTeX, Asymptote, ImageMagick and 3D Drivers
         run: |
           sudo apt-get update
-          sudo apt-get install -y texlive-latex-base texlive-latex-extra texlive-science texlive-lang-cyrillic cm-super asymptote texlive-bibtex-extra biber inkscape xvfb libgl1-mesa-dri ghostscript
+          # Устанавливаем imagemagick для постобработки прозрачности
+          sudo apt-get install -y texlive-latex-base texlive-latex-extra texlive-science texlive-lang-cyrillic cm-super asymptote texlive-bibtex-extra biber inkscape xvfb libgl1-mesa-dri ghostscript imagemagick
 
       - name: Compile All Documents and 3D Render
         run: |
           mkdir -p output
 
-          # 1. Сборка vector_globe.tex со встроенной векторной прозрачностью
+          # 1. Сборка vector_globe.tex с помощью метода удаления фона ImageMagick
           if [ -f "vector_globe.tex" ]; then
-            echo "Компиляция файла vector_globe.tex..."
-            pdflatex -interaction=nonstopmode -shell-escape vector_globe.tex || true
-            xvfb-run -a asy -f pdf vector_globe-*.asy || echo "Ошибка при рендере asy"
+            echo "Шаг 1: Первичная сборка LaTeX..."
             pdflatex -interaction=nonstopmode -shell-escape vector_globe.tex || true
             
-            cp vector_globe.pdf output/vector_globe.pdf
-            rm -f vector_globe.pdf vector_globe-*.pdf vector_globe-*.tex
+            echo "Шаг 2: 3D-рендеринг в высоком качестве на виртуальном OpenGL экране..."
+            xvfb-run -a asy vector_globe-*.asy || echo "Ошибка при рендере asy"
+            
+            echo "Шаг 3: Удаление белого фона через ImageMagick и конвертация в PDF..."
+            if [ -f "vector_globe-1.png" ]; then
+              # -fuzz 5% аккуратно сглаживает пиксели по краям шара, чтобы не было белой обводки
+              convert vector_globe-1.png -fuzz 5% -transparent white transparent_globe.pdf
+            else
+              echo "Критическая ошибка: файл vector_globe-1.png не был найден движком Asymptote!"
+            fi
+            
+            # Переносим чистый прозрачный 3D-рисунок в целевую папку
+            if [ -f "transparent_globe.pdf" ]; then
+              cp transparent_globe.pdf output/vector_globe.pdf
+            fi
+            
+            # Чистим рабочую директорию от временных файлов
+            rm -f vector_globe.pdf vector_globe-*.pdf vector_globe-*.png vector_globe-*.tex transparent_globe.pdf
           fi
 
-          # 2. Обход всех остальных проектов main.tex в ваших подпапках
+          # 2. Стандартный обход остальных проектов main.tex в ваших подпапках
           find . -name "main.tex" | while read -r MAIN_FILE_PATH; do
             DIR_PATH=$(dirname "$MAIN_FILE_PATH")
             PDF_NAME=$(basename "$DIR_PATH")
@@ -74,18 +89,15 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           
-          rm -f *.pdf
+          rm -f *.pdf *.png
           
           if [ -d "output" ]; then git add output/; fi
           find src/ -name "*.pdf" -exec git add {} + 2>/dev/null || true
           
           if ! git diff --quiet || ! git diff --staged --quiet; then
-            git commit -m "Automated PDF generation [skip ci]"
-            
-            # Перед пушем жестко сбрасываем состояние и подтягиваем самые свежие изменения сервера
+            git commit -m "Automated PDF generation via ImageMagick [skip ci]"
             git fetch origin main
             git rebase -Xtheirs origin/main
-            
             git push origin main
           else
             echo "No changes to commit"
