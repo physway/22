@@ -5,7 +5,8 @@ on:
     branches: [ "main" ]
     paths-ignore:
       - 'output/**'
-      - '*.pdf' # Игнорируем запуск, если пушатся сами PDF-файлы
+      - '*.pdf'
+      - '*.png'
 
 permissions:
   contents: write
@@ -27,32 +28,29 @@ jobs:
 
       - name: Compile All Documents and 3D Render
         run: |
-          # Создаем папку для результатов заранее
           mkdir -p output
 
-          # 1. Компилируем ваш отдельный файл vector_globe.tex с прозрачностью (если он в корне)
+          # 1. Сборка файла vector_globe.tex с прозрачным 3D-режимом
           if [ -f "vector_globe.tex" ]; then
-            echo "Компиляция vector_globe.tex со встроенной прозрачностью..."
-            pdflatex -interaction=nonstopmode -shell-escape vector_globe.tex || true
-            xvfb-run -a asy -f pdf vector_globe-*.asy || echo "Нет asy файлов для vector_globe"
+            echo "Компиляция vector_globe.tex через виртуальный дисплей..."
             pdflatex -interaction=nonstopmode -shell-escape vector_globe.tex || true
             
-            # Переносим результат в output, а из корня удаляем, чтобы не засорять репозиторий
+            # Запуск рендерера Asymptote внутри виртуального графического буфера Xvfb
+            xvfb-run -a asy vector_globe-*.asy || echo "Ошибка при рендере asy"
+            
+            # Финальная сборка: LaTeX берет прозрачный PNG и кладет его в PDF
+            pdflatex -interaction=nonstopmode -shell-escape vector_globe.tex || true
+            
             cp vector_globe.pdf output/vector_globe.pdf
-            rm -f vector_globe.pdf vector_globe-*.pdf vector_globe-*.tex
+            rm -f vector_globe.pdf vector_globe-*.pdf vector_globe-*.png vector_globe-*.tex
           fi
 
-          # 2. Выполняем ваш стандартный обход всех папок с main.tex в /src
+          # 2. Стандартный обход остальных ваших проектов
           find . -name "main.tex" | while read -r MAIN_FILE_PATH; do
             DIR_PATH=$(dirname "$MAIN_FILE_PATH")
             PDF_NAME=$(basename "$DIR_PATH")
             
             if [[ "$DIR_PATH" == *"output"* ]]; then continue; fi
-            
-            echo "--------------------------------------------------"
-            echo "Найдена папка проекта: $DIR_PATH"
-            echo "Файл PDF будет сохранен как: $DIR_PATH/$PDF_NAME.pdf"
-            echo "--------------------------------------------------"
             
             ROOT_DIR=$(pwd)
             cd "$DIR_PATH"
@@ -71,14 +69,11 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           
-          # Очищаем корень от случайных временных PDF перед коммитом
-          rm -f *.pdf
+          rm -f *.pdf *.png
           
-          # Индексируем только целевую папку output и вложенные папки /src
           if [ -d "output" ]; then git add output/; fi
           find src/ -name "*.pdf" -exec git add {} + 2>/dev/null || true
           
-          # Пушим изменения. В случае конфликта бинарных PDF принудительно берем свежеотрендеренную версию (-Xtheirs)
           if ! git diff --quiet || ! git diff --staged --quiet; then
             git commit -m "Automated PDF generation [skip ci]"
             git pull --rebase -Xtheirs --autostash origin main
