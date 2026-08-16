@@ -7,7 +7,7 @@
 
 \begin{document}
 \begin{asy}
-    settings.render = 4; // Качественное сглаживание деталей
+    settings.render = 4; // Сглаживание деталей
     settings.prc = false;
     settings.outformat = "pdf"; 
 
@@ -19,40 +19,40 @@
     size(3cm,0);
     currentprojection = orthographic((5,2,2));
 
-    // НАСТРОЙКА ПРОЗРАЧНОСТИ: делаем свет и фон сцены невидимыми
-    currentlight.background = black+opacity(0.0);
+    // ГАРАНТИРОВАННАЯ ПРОЗРАЧНОСТЬ ДЛЯ СЕРВЕРНОГО OPENGL
+    currentlight.background = opacity(0.0) + white;
 
     //styles
-    DefaultHead3.size=new real(pen p=currentpen) {return 3mm;};
+    DefaultHead3.size = new real(pen p=currentpen) {return 3mm;};
     defaultpen(fontsize(11pt));
     defaultpen(linewidth(0.4pt));
-    pen thick=black+2*linewidth(currentpen);
+    pen thick = black + 2*linewidth(currentpen);
 
     path path2D = (2.5, 0) .. (2, 1) .. (0, 2) .. (-2.25, 1) .. (-1.5, 0) .. (-1, -1) .. (0, -1.75) .. (1, -2) .. cycle;
     path3 path3D = path3(path2D, XYplane);
 
     // External ball
-    triple pA=(rotate(-20,X)*Z);
-    path3 circ=(reverse(arc(O,pA,-Z)));
+    triple pA = (rotate(-20,X)*Z);
+    path3 circ = (reverse(arc(O,pA,-Z)));
     for (int n = 0; n <= 11; ++n) {
-        revolution sur=revolution(O,circ,Z,30*n,30*(n+1));
+        revolution sur = revolution(O,circ,Z,30*n,30*(n+1));
         draw(surface(sur), lightgray);
     }
 
     // Internal ball
-    triple pA=(rotate(-20,X)*0.9Z);
-    path3 circ=(reverse(arc(O,pA,-Z)));
+    triple pA = (rotate(-20,X)*0.9Z);
+    path3 circ = (reverse(arc(O,pA,-Z)));
     for (int n = 0; n <= 11; ++n) {
-        revolution sur=revolution(O,circ,Z,30*n,30*(n+1));
+        revolution sur = revolution(O,circ,Z,30*n,30*(n+1));
         draw(surface(sur), lightgray);
     }
 
     // Between walls
-    triple pA=(rotate(-20,X)*Z);
-    triple pB=(rotate(-20,X)*.9Z);
-    path3 bet=pA--pB;
+    triple pA = (rotate(-20,X)*Z);
+    triple pB = (rotate(-20,X)*.9Z);
+    path3 bet = pA--pB;
     for (int n = 0; n <= 11; ++n) {
-        revolution sur=revolution(O,bet,Z,30*n,30*(n+1));
+        revolution sur = revolution(O,bet,Z,30*n,30*(n+1));
         draw(surface(sur), lightgray);
     }
 \end{asy}
