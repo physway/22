@@ -7,13 +7,9 @@
 
 \begin{document}
 \begin{asy}
-    // Настраиваем вывод в прозрачный PNG высокого разрешения
-    settings.outformat = "png"; 
-    settings.render = 8;        // Максимальное сглаживание и качество БЕЗ артефактов
+    settings.render = 0; // Чистый векторный 3D-просчет (дает 100% прозрачность фона на сервере)
     settings.prc = false;
-    
-    // Включаем честную альфа-прозрачность для 3D-сцены в OpenGL
-    currentlight.background = opacity(0.0); 
+    settings.outformat = "pdf"; 
 
     import three;
     import texcolors;
@@ -23,13 +19,14 @@
     size(3cm,0);
     currentprojection = orthographic((5,2,2));
 
-    currentlight = light(gray(0.6), specular=gray(0.2), (5,5,10));
-
-    // Styles
+    // Настройка стилей линий
     DefaultHead3.size = new real(pen p=currentpen) {return 3mm;};
     defaultpen(fontsize(11pt));
     defaultpen(linewidth(0.4pt));
     pen thick = black + 2*linewidth(currentpen);
+
+    // Цвет заливки поверхностей: используем nolight, чтобы убрать черные пятна и артефакты
+    pen surface_pen = lightgray;
 
     path path2D = (2.5, 0) .. (2, 1) .. (0, 2) .. (-2.25, 1) .. (-1.5, 0) .. (-1, -1) .. (0, -1.75) .. (1, -2) .. cycle;
     path3 path3D = path3(path2D, XYplane);
@@ -39,7 +36,8 @@
     path3 circ = (reverse(arc(O,pA,-Z)));
     for (int n = 0; n <= 11; ++n) {
         revolution sur = revolution(O,circ,Z,30*n,30*(n+1));
-        draw(surface(sur), lightgray);
+        // nolight отключает 3D-тени, убирая "грязные" линии и артефакты на стыках векторов
+        draw(surface(sur), surface_pen, nolight);
     }
 
     // Internal ball
@@ -47,7 +45,7 @@
     path3 circ = (reverse(arc(O,pA,-Z)));
     for (int n = 0; n <= 11; ++n) {
         revolution sur = revolution(O,circ,Z,30*n,30*(n+1));
-        draw(surface(sur), lightgray);
+        draw(surface(sur), surface_pen, nolight);
     }
 
     // Between walls
@@ -56,7 +54,7 @@
     path3 bet = pA--pB;
     for (int n = 0; n <= 11; ++n) {
         revolution sur = revolution(O,bet,Z,30*n,30*(n+1));
-        draw(surface(sur), lightgray);
+        draw(surface(sur), surface_pen, nolight);
     }
 \end{asy}
 \end{document}
