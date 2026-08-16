@@ -11,10 +11,13 @@
 //settings.prc=true;
 //settings.render=11;
 
-settings.render = 4; 
+ // Настраиваем вывод в прозрачный PNG высокого разрешения
+    settings.outformat = "png"; 
+    settings.render = 8;        // Максимальное сглаживание деталей
     settings.prc = false;
-    settings.outformat = "pdf"; 
-
+    
+    // Ключевая команда Asymptote для отключения фона в 3D OpenGL
+    currentlight.background = opacity(0.0); 
 
 
 import three;
