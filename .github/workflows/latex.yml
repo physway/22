@@ -7,6 +7,11 @@ on:
       - 'output/**'
       - '*.pdf'
 
+# ЗАЩИТА ОТ БЛОКИРОВОК: Разрешаем выполнять только ОДНУ сборку одновременно
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: write
 
@@ -29,7 +34,7 @@ jobs:
         run: |
           mkdir -p output
 
-          # 1. Сборка vector_globe.tex с векторной прозрачностью
+          # 1. Сборка vector_globe.tex со встроенной векторной прозрачностью
           if [ -f "vector_globe.tex" ]; then
             echo "Компиляция файла vector_globe.tex..."
             pdflatex -interaction=nonstopmode -shell-escape vector_globe.tex || true
@@ -76,7 +81,11 @@ jobs:
           
           if ! git diff --quiet || ! git diff --staged --quiet; then
             git commit -m "Automated PDF generation [skip ci]"
-            git pull --rebase -Xtheirs --autostash origin main
+            
+            # Перед пушем жестко сбрасываем состояние и подтягиваем самые свежие изменения сервера
+            git fetch origin main
+            git rebase -Xtheirs origin/main
+            
             git push origin main
           else
             echo "No changes to commit"
