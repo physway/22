@@ -2,7 +2,7 @@
 \usepackage[inline]{asymptote}
 \usepackage[utf8]{inputenc}
 \usepackage[T1,T2A]{fontenc}
-\usepackage{graphicx}
+\usepackage[]{graphicx}
 \usepackage[russian]{babel}
 
 \begin{document}
@@ -19,46 +19,41 @@
     size(3cm,0);
     currentprojection = orthographic((5,2,2));
 
-    // КЛЮЧЕВАЯ НАСТРОЙКА: создаем абсолютно прозрачное 3D-основание
-    pen backgroundpen = black + opacity(0.0);
-    currentlight = light(background=backgroundpen, diffuse=white, dir(1,1,2));
+    // НАСТРОЙКА ПРОЗРАЧНОСТИ: делаем свет и фон сцены невидимыми
+    currentlight.background = black+opacity(0.0);
 
-    // Настройка материала поверхностей шара
-    material ball_mat = material(diffusepen=lightgray, emissivepen=gray(0.1));
-
-    // Styles
-    DefaultHead3.size = new real(pen p=currentpen) {return 3mm;};
+    //styles
+    DefaultHead3.size=new real(pen p=currentpen) {return 3mm;};
     defaultpen(fontsize(11pt));
     defaultpen(linewidth(0.4pt));
-    pen thick = black + 2*linewidth(currentpen);
+    pen thick=black+2*linewidth(currentpen);
 
     path path2D = (2.5, 0) .. (2, 1) .. (0, 2) .. (-2.25, 1) .. (-1.5, 0) .. (-1, -1) .. (0, -1.75) .. (1, -2) .. cycle;
     path3 path3D = path3(path2D, XYplane);
 
     // External ball
-    triple pA = (rotate(-20,X)*Z);
-    path3 circ = (reverse(arc(O,pA,-Z)));
+    triple pA=(rotate(-20,X)*Z);
+    path3 circ=(reverse(arc(O,pA,-Z)));
     for (int n = 0; n <= 11; ++n) {
-        revolution sur = revolution(O,circ,Z,30*n,30*(n+1));
-        // Отрисовка с жестким указанием прозрачного рендерера
-        draw(surface(sur), ball_mat, render(merge=true));
+        revolution sur=revolution(O,circ,Z,30*n,30*(n+1));
+        draw(surface(sur), lightgray);
     }
 
     // Internal ball
-    triple pA = (rotate(-20,X)*0.9Z);
-    path3 circ = (reverse(arc(O,pA,-Z)));
+    triple pA=(rotate(-20,X)*0.9Z);
+    path3 circ=(reverse(arc(O,pA,-Z)));
     for (int n = 0; n <= 11; ++n) {
-        revolution sur = revolution(O,circ,Z,30*n,30*(n+1));
-        draw(surface(sur), ball_mat, render(merge=true));
+        revolution sur=revolution(O,circ,Z,30*n,30*(n+1));
+        draw(surface(sur), lightgray);
     }
 
     // Between walls
-    triple pA = (rotate(-20,X)*Z);
-    triple pB = (rotate(-20,X)*.9Z);
-    path3 bet = pA--pB;
+    triple pA=(rotate(-20,X)*Z);
+    triple pB=(rotate(-20,X)*.9Z);
+    path3 bet=pA--pB;
     for (int n = 0; n <= 11; ++n) {
-        revolution sur = revolution(O,bet,Z,30*n,30*(n+1));
-        draw(surface(sur), ball_mat, render(merge=true));
+        revolution sur=revolution(O,bet,Z,30*n,30*(n+1));
+        draw(surface(sur), lightgray);
     }
 \end{asy}
 \end{document}
