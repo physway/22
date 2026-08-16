@@ -1,32 +1,40 @@
-name: Render Asymptote 3D
-on: [push, workflow_dispatch]
+name: Compile LaTeX with Transparent Asymptote
+
+on:
+  push:
+    branches: [ "main" ] # запускать при пуше в ветку main
+  workflow_dispatch: # возможность запускать вручную
 
 jobs:
-  render:
+  build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Asymptote and Tools
+      - name: Install TeX Live and Asymptote
         run: |
           sudo apt-get update
-          sudo apt-get install -y asymptote imagemagick xvfb libgl1-mesa-dri
+          sudo apt-get install -y texlive-full asymptote ghostscript
 
-      - name: Fix ImageMagick Policy (Allow PDF/PNG conversions)
+      - name: Compile Document
         run: |
-          sudo sed -i 's/domain="coder" rights="none" pattern="PDF"/domain="coder" rights="read|write" pattern="PDF"/' /etc/ImageMagick-6/policy.xml
-
-      - name: Render 3D with Alpha Channel
-        run: |
-          # 1. Рендерим 3D-сцену на стандартном белом фоне в ультра-качестве
-          xvfb-run -a asy -f png -render=8 -multisample=4 1.asy
+          # 1. Первый проход LaTeX (генерирует временные .asy файлы для графики)
+          pdflatex -shell-escape main.tex
           
-          # 2. Утилита ImageMagick берет файл 1.png, стирает белый цвет и перезаписывает его
-          convert 1.png -transparent white 1.png
+          # 2. Компиляция всех сгенерированных файлов Asymptote
+          # Флаг -bg 0 принудительно задает прозрачный фон на уровне консоли
+          for f in *.asy; do
+            [ -e "$f" ] || continue
+            asy -f pdf -bg 0 "$f"
+          done
+          
+          # 3. Второй проход LaTeX (встраивает готовые прозрачные PDF-куски в документ)
+          pdflatex -shell-escape main.tex
 
-      - name: Upload Finished Transparent PNG
-        uses: actions/upload-artifact@v4
+      - name: Upload PDF Artifact
+        uses: actions/artifacts@v4
         with:
-          name: transparent-3d-model
-          path: 1.png
+          name: compiled-pdf
+          path: main.pdf
