@@ -6,7 +6,6 @@ on:
     paths-ignore:
       - 'output/**'
       - '*.pdf'
-      - '*.png'
 
 permissions:
   contents: write
@@ -30,27 +29,18 @@ jobs:
         run: |
           mkdir -p output
 
-          # 1. Сборка vector_globe.tex через прозрачный растровый буфер высокого качества
+          # 1. Сборка vector_globe.tex с векторной прозрачностью
           if [ -f "vector_globe.tex" ]; then
             echo "Компиляция файла vector_globe.tex..."
             pdflatex -interaction=nonstopmode -shell-escape vector_globe.tex || true
-            
-            # Генерируем PNG высокого разрешения с альфа-каналом
-            xvfb-run -a asy vector_globe-*.asy || echo "Ошибка при рендере asy"
-            
-            # Переименовываем сгенерированный PNG, чтобы LaTeX гарантированно вставил картинку, а не пустой код
-            if [ -f "vector_globe-1.png" ]; then
-              mv vector_globe-1.png vector_globe-1.pdf.png 2>/dev/null || true
-            fi
-            
-            # Финальный проход LaTeX: упаковываем прозрачный PNG внутрь PDF
+            xvfb-run -a asy -f pdf vector_globe-*.asy || echo "Ошибка при рендере asy"
             pdflatex -interaction=nonstopmode -shell-escape vector_globe.tex || true
             
             cp vector_globe.pdf output/vector_globe.pdf
-            rm -f vector_globe.pdf vector_globe-*.pdf vector_globe-*.png vector_globe-*.tex
+            rm -f vector_globe.pdf vector_globe-*.pdf vector_globe-*.tex
           fi
 
-          # 2. Обход всех остальных проектов main.tex во вложенных папках
+          # 2. Обход всех остальных проектов main.tex в ваших подпапках
           find . -name "main.tex" | while read -r MAIN_FILE_PATH; do
             DIR_PATH=$(dirname "$MAIN_FILE_PATH")
             PDF_NAME=$(basename "$DIR_PATH")
@@ -77,9 +67,9 @@ jobs:
       - name: Commit and Push All PDFs and Graphics
         run: |
           git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@://github.com"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           
-          rm -f *.pdf *.png
+          rm -f *.pdf
           
           if [ -d "output" ]; then git add output/; fi
           find src/ -name "*.pdf" -exec git add {} + 2>/dev/null || true
