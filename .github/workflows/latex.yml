@@ -1,19 +1,11 @@
 name: Compile LaTeX with Complex 3D Asymptote
 
-on:
-  push:
-    branches: [ "main" ]
-    paths-ignore:
-      - 'output/**'
-      - '*.pdf'
-      - '*.png'
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+on: [push]
 
 permissions:
   contents: write
+  pages: write      # Разрешение на публикацию GitHub Pages
+  id-token: write   # Необходимый токен безопасности для деплоя
 
 jobs:
   build:
@@ -22,88 +14,74 @@ jobs:
     steps:
       - name: Set up Git Repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 
 
-      - name: Install LaTeX, Asymptote, ImageMagick and 3D Drivers
+      - name: Install LaTeX, Asymptote, Inkscape and Xvfb 3D Drivers
         run: |
           sudo apt-get update
-          sudo apt-get install -y texlive-latex-base texlive-latex-extra texlive-science texlive-lang-cyrillic cm-super asymptote texlive-bibtex-extra biber inkscape xvfb libgl1-mesa-dri ghostscript imagemagick
-
-      - name: Change ImageMagick policy to allow PDF manipulation
-        run: |
-          # СНИМАЕМ БЛОКИРОВКУ БЕЗОПАСНОСТИ LINUX: разрешаем ImageMagick читать и писать PDF
-          sudo sed -i 's/rights="none" pattern="PDF"/rights="read|write" pattern="PDF"/' /etc/ImageMagick-6/policy.xml || true
-          sudo sed -i 's/rights="none" pattern="PDF"/rights="read|write" pattern="PDF"/' /etc/ImageMagick-7/policy.xml || true
+          sudo apt-get install -y texlive-latex-base texlive-latex-extra texlive-science texlive-lang-cyrillic cm-super asymptote texlive-bibtex-extra biber inkscape xvfb libgl1-mesa-dri
 
       - name: Compile All Documents and 3D Render
         run: |
-          mkdir -p output
-
-          # 1. Сборка vector_globe.tex с помощью метода удаления фона ImageMagick
-          if [ -f "vector_globe.tex" ]; then
-            echo "Шаг 1: Первичная сборка LaTeX..."
-            pdflatex -interaction=nonstopmode -shell-escape vector_globe.tex || true
-            
-            echo "Шаг 2: 3D-рендеринг в высоком качестве на виртуальном OpenGL экране..."
-            xvfb-run -a asy vector_globe-*.asy || echo "Ошибка при рендере asy"
-            
-            echo "Шаг 3: Удаление белого фона через ImageMagick и конвертация в PDF..."
-            if [ -f "vector_globe-1.png" ]; then
-              # Разблокированный convert теперь успешно создаст прозрачный PDF из PNG
-              convert vector_globe-1.png -fuzz 5% -transparent white transparent_globe.pdf
-            else
-              echo "Критическая ошибка: файл vector_globe-1.png не был найден движком Asymptote!"
-            fi
-            
-            # Переносим чистый прозрачный 3D-рисунок в целевую папку
-            if [ -f "transparent_globe.pdf" ]; then
-              cp transparent_globe.pdf output/vector_globe.pdf
-            fi
-            
-            # Чистим рабочую директорию от временных файлов
-            rm -f vector_globe.pdf vector_globe-*.pdf vector_globe-*.png vector_globe-*.tex transparent_globe.pdf
-          fi
-
-          # 2. Обход всех остальных проектов main.tex в ваших подпапках
+          # 1. Находим все файлы main.tex во всех папках репозитория
+          # И запускаем цикл по каждому найденному файлу
           find . -name "main.tex" | while read -r MAIN_FILE_PATH; do
-            DIR_PATH=$(dirname "$MAIN_FILE_PATH")
-            PDF_NAME=$(basename "$DIR_PATH")
             
-            if [[ "$DIR_PATH" == *"output"* ]]; then continue; fi
+            # Получаем путь к текущей папке (например, ./src или ./chapter1)
+            DIR_PATH=$(dirname "$MAIN_FILE_PATH")
+            
+            # Извлекаем имя этой папки (например, src или chapter1)
+            PDF_NAME=$(basename "$DIR_PATH")
             
             echo "--------------------------------------------------"
             echo "Найдена папка проекта: $DIR_PATH"
             echo "Файл PDF будет сохранен как: $DIR_PATH/$PDF_NAME.pdf"
             echo "--------------------------------------------------"
             
+            # Сохраняем текущую папку, чтобы вернуться назад после компиляции
             ROOT_DIR=$(pwd)
+            
+            # Переходим в папку с текущим документом
             cd "$DIR_PATH"
             
+            # 2. Первый проход LaTeX
             pdflatex -interaction=nonstopmode -shell-escape -jobname="$PDF_NAME" main.tex || true
+            
+            # 3. Рендеринг сложной 3D графики Asymptote для этой папки
             xvfb-run -a asy -f pdf *.asy || echo "No .asy files to compile in $DIR_PATH"
+            
+            # 4. Сборка библиографии для текущего PDF
             biber "$PDF_NAME" || echo "No bibliography to compile in $DIR_PATH"
+            
+            # 5. Финальные проходы LaTeX для правильной верстки
             pdflatex -interaction=nonstopmode -shell-escape -jobname="$PDF_NAME" main.tex || true
             pdflatex -interaction=nonstopmode -shell-escape -jobname="$PDF_NAME" main.tex || true
             
+            # Возвращаемся в корень репозитория для перехода к следующей папке
             cd "$ROOT_DIR"
           done
 
       - name: Commit and Push All PDFs and Graphics
         run: |
           git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global user.email "41898282+github-actions[bot]@://github.com"
           
-          rm -f *.pdf *.png
+          # Находим все созданные PDF-файлы и добавляем их в Git
+          # Конструкция find + git add позволяет безопасно добавить файлы из всех подпапок
+          find . -name "*.pdf" -exec git add {} +
           
-          if [ -d "output" ]; then git add output/; fi
-          find src/ -name "*.pdf" -exec git add {} + 2>/dev/null || true
-          
-          if ! git diff --quiet || ! git diff --staged --quiet; then
-            git commit -m "Automated PDF generation via ImageMagick [skip ci]"
-            git fetch origin main
-            git rebase -Xtheirs origin/main
-            git push origin main
-          else
-            echo "No changes to commit"
-          fi
+          git commit -m "Automated PDF generation for all project folders" || echo "No changes to commit"
+          git push
+
+      # === АВТОМАТИЧЕСКОЕ ОБНОВЛЕНИЕ САЙТА GITHUB PAGES ===
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
